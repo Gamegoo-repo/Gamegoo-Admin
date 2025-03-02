@@ -72,11 +72,11 @@ npm run dev
 
 ## 🔧 기술 스택
 
-- **Frontend**: React, TypeScript, Vite
-- **State Management**: Redux Toolkit / Zustand
-- **UI Library**: Styled Components / Tailwind CSS
+- **Framework/Language**: React, TypeScript
+- **State Management**: Redux Toolkit
+- **UI Library**: Styled Components
 - **API 요청**: Axios
-- **빌드 및 배포**: Vite, Docker
+- **빌드 및 배포**: Vite, Vercel
 
 ---
 
