@@ -5,31 +5,7 @@ import { useState } from "react";
 import Table from "../components/table/Table";
 import { COLUMNS } from "../constants/table/columns";
 import Label from "../components/common/Label";
-
-const data = [
-  {
-    id: 1,
-    state: "정상",
-    name: "하이",
-    reason: "스팸 홍보 / 도배글",
-    details: "게임 중 팀원에게 인신공격성 발언",
-    reporter: "신고자",
-    date: "날짜",
-    count: 1,
-    page: "프로필",
-  },
-  {
-    id: 2,
-    state: "한정 정지",
-    name: "ㅎㅎ",
-    reason: "불법 정보 포함",
-    details: "게임 중 팀원에게 인신공격성 발언",
-    reporter: "신고자",
-    date: "날짜",
-    count: 1,
-    page: "프로필",
-  },
-];
+import { TABLE_DUMMY } from "../constants/table/dummy";
 
 const ReportPage = () => {
   // const { page } = useParams();
@@ -44,7 +20,7 @@ const ReportPage = () => {
     <Layout>
       <Title title="신고 유저 목록" />
       <Table
-        data={data}
+        data={TABLE_DUMMY}
         columns={COLUMNS}
         currentPage={currentPage}
         totalPages={totalPages}
