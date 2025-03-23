@@ -12,16 +12,15 @@ const GlobalStyle = createGlobalStyle`
         width: 100%;
         height: 100%;
         margin: 0 auto;
-        background-color: ${theme.colors.white};
+        background-color: ${theme.colors.gray100};
         overflow: hidden;
       }
 
       body {
         width: 100%;
         height: 100%;
-        max-width: 480px;
         font-family: "Pretendard";
-        background-color: ${theme.colors.white};
+        background-color: ${theme.colors.gray100};
         overflow: hidden;
       }
 
@@ -61,6 +60,7 @@ const GlobalStyle = createGlobalStyle`
         font-family: inherit;
         font-size: inherit;
         line-height: inherit;
+        outline: none;
       }
 
       input,
@@ -78,6 +78,41 @@ const GlobalStyle = createGlobalStyle`
       input:focus,
       textarea:focus {
         outline: none;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        border-radius: 12px;
+      }
+      
+      th {
+        padding: 7.5px 12px;
+        text-align: left;
+        word-wrap: break-word;
+      }
+
+      td {
+        padding: 8.5px 12.5px;
+        text-align: left;
+        word-wrap: break-word;
+      }
+
+      th:first-child {
+        border-top-left-radius: 6px;
+      }
+
+      th:last-child {
+        border-top-right-radius: 6px;
+      }
+
+      td:first-child {
+        border-bottom-left-radius: 6px;
+      }
+
+      td:last-child {
+        border-bottom-right-radius: 6px;
       }
 
       @font-face {
