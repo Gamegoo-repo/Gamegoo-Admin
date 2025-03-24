@@ -1,6 +1,6 @@
 import React from "react";
 import { theme } from "../../styles/theme";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 interface ButtonProps {
   variant?: "primary" | "secondary" | "default";
@@ -11,6 +11,7 @@ interface ButtonProps {
   fontSize?: string;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   disabled?: boolean;
+  selected?: boolean;
 }
 
 const Button = (props: ButtonProps) => {
@@ -23,6 +24,7 @@ const Button = (props: ButtonProps) => {
     fontSize,
     onClick,
     disabled = false,
+    selected = false,
   } = props;
 
   return (
@@ -34,6 +36,7 @@ const Button = (props: ButtonProps) => {
       $width={width}
       $height={height}
       $fontsize={fontSize}
+      $selected={selected}
     >
       {icon && <img src={icon} width={24} height={24} />}
       {label}
@@ -47,6 +50,7 @@ const StyledButton = styled.button<{
   $width?: string;
   $height?: string;
   $fontsize?: string;
+  $selected?: boolean;
 }>`
   width: ${({ $width }) => $width || "100%"};
   height: ${({ $height }) => $height || "auto"};
@@ -79,13 +83,17 @@ const StyledButton = styled.button<{
   }
   &.default {
     background: ${theme.colors.white};
-    border: 2px solid ${theme.colors.violet600};
-    color: ${theme.colors.violet600};
+    border: 1px solid ${theme.colors.gray800};
+    color: ${theme.colors.gray800};
     ${(props) => props.theme.fonts.semiBold14};
-    &:hover:not(:disabled) {
-      border: 1px solid ${theme.colors.gray800};
-      color: ${theme.colors.gray800};
-    }
+
+    ${({ $selected }) =>
+      $selected &&
+      css`
+        border: 2px solid ${theme.colors.violet600};
+        color: ${theme.colors.violet600};
+      `}
+
     &:disabled {
       border: 1px solid ${theme.colors.gray300};
       color: ${theme.colors.gray300};

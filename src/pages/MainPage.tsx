@@ -1,12 +1,5 @@
-import Header from "../components/common/Header";
-
 const MainPage = () => {
-  return (
-    <div>
-      <Header />
-      Gamegoo Admin Initial Setting
-    </div>
-  );
+  return <div>MainPage</div>;
 };
 
 export default MainPage;
