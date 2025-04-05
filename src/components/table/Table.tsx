@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { TableHeader } from "./TableHeader";
 import { TableRow } from "./TableRow";
 import Pagination from "../common/Pagination";
@@ -20,13 +20,38 @@ const Table: React.FC<TableProps> = ({
   totalPages,
   onPageChange,
 }) => {
+  const [checkedItems, setCheckedItems] = useState<boolean[]>(
+    new Array(data.length).fill(false)
+  );
+
+  const allSelected = checkedItems.every(Boolean);
+
+  const handleSelectAll = () => {
+    setCheckedItems(new Array(data.length).fill(!allSelected));
+  };
+
+  const handleCheck = (index: number) => {
+    const updated = [...checkedItems];
+    updated[index] = !updated[index];
+    setCheckedItems(updated);
+  };
+
   return (
     <TableContainer>
       <table>
-        <TableHeader columns={columns} />
+        <TableHeader
+          columns={columns}
+          allSelected={allSelected}
+          onSelectAll={handleSelectAll}
+        />
         <tbody>
           {data.map((row, index) => (
-            <TableRow key={index} row={row} />
+            <TableRow
+              key={index}
+              row={row}
+              isChecked={checkedItems[index]}
+              onCheck={() => handleCheck(index)}
+            />
           ))}
         </tbody>
       </table>

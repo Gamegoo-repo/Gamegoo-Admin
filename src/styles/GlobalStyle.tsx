@@ -88,7 +88,8 @@ const GlobalStyle = createGlobalStyle`
       }
       
       th {
-        padding: 7.5px 12px;
+        /* padding: 7.5px 12px; */
+        padding: 8.5px 12.5px;
         text-align: left;
         word-wrap: break-word;
       }
