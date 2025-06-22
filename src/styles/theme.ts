@@ -187,6 +187,10 @@ const fonts = {
         weight: 400,
         size: 14,
     }),
+    regular13: FONT({
+        weight: 400,
+        size: 13,
+    }),
     regular12: FONT({
         weight: 400,
         size: 12,
