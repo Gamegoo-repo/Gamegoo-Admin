@@ -11,7 +11,9 @@ import Button from "../components/common/Button";
 import Dropdown from "../components/common/Dropdown";
 import { ACCOUNT, SORT } from "../constants/dropdown";
 import Input from "../components/common/Input";
-import { LABELS } from "../constants/filter";
+import { FIELDS } from "../constants/filter";
+import ReportCountFilter from "../components/filter/ReportCountFilter";
+import { FilterValues, ReportCountRange } from "../types/filter/filter";
 
 const ReportPage = () => {
   // const { page } = useParams();
@@ -19,6 +21,14 @@ const ReportPage = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const totalPages = 20;
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
+
+  // 필터 입력 상태
+  const [formValues, setFormValues] = useState<FilterValues>({});
+  const [reportCountRange, setReportCountRange] = useState<ReportCountRange>({
+    min: "",
+    max: "",
+  });
+  const [isRange, setIsRange] = useState<boolean>(false);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -54,16 +64,34 @@ const ReportPage = () => {
         </TopWrapper>
         {isFilterOpen && (
           <FilterContainer>
-            {LABELS.map((label, index) => (
-              <Input
-                key={index}
-                inputType="input"
-                label={label}
-                value=""
-                onChange={() => {}}
-                placeholder="내용을 입력해 주세요"
-              />
-            ))}
+            {FIELDS.map((field, index) => {
+              if (field.type === "range") {
+                return (
+                  <ReportCountFilter
+                    key={index}
+                    label={field.key}
+                    value={reportCountRange}
+                    isRange={isRange}
+                    onChange={setReportCountRange}
+                    onToggleRange={() => setIsRange(!isRange)}
+                  />
+                );
+              }
+
+              return (
+                <Input
+                  key={index}
+                  inputType={field.type}
+                  label={field.key}
+                  value={formValues[field.key] || ""}
+                  onChange={(val) =>
+                    setFormValues({ ...formValues, [field.key]: val })
+                  }
+                  placeholder="내용을 입력해 주세요"
+                  options={field.options || []}
+                />
+              );
+            })}
             <Button variant="primary" label="검색" width="100%" height="33px" />
           </FilterContainer>
         )}
