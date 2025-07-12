@@ -3,6 +3,7 @@ import MainPage from "../pages/MainPage";
 import ReportPage from "../pages/ReportPage";
 import MainLayout from "../layouts/MainLayout";
 import AuthLayout from "../layouts/AuthLayout";
+import LoginPage from "../pages/LoginPage";
 
 const router = createBrowserRouter([
   {
@@ -12,12 +13,14 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <MainLayout />,
-        children: [{ index: true, element: <MainPage /> }],
+        children: [
+          { index: true, element: <MainPage /> },
+          { path: "report", element: <ReportPage /> },
+        ],
       },
       {
-        path: "/",
-        element: <MainLayout />,
-        children: [{ path: "report", element: <ReportPage /> }],
+        path: "login",
+        element: <LoginPage />,
       },
     ],
   },
