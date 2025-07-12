@@ -59,7 +59,7 @@ const LoginPage = () => {
       storage.setItem(STORAGE_KEY.accessToken, accessToken);
       storage.setItem(STORAGE_KEY.refreshToken, refreshToken);
       storage.setItem(STORAGE_KEY.name, response.data.name);
-      storage.setItem(STORAGE_KEY.userId, response.data.id);
+      storage.setItem(STORAGE_KEY.userId, response.data.id.toString());
       navigate("/");
     } catch (error: any) {
       const data = error.response.data;
