@@ -1,4 +1,4 @@
-import type { ApiResponse } from "../api";
+import { ApiResponse } from "../api";
 
 export interface ReissueData {
   id: number;
