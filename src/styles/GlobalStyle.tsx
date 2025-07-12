@@ -69,7 +69,6 @@ const GlobalStyle = createGlobalStyle`
         font-size: inherit;
         line-height: inherit;
         border-radius: 4px;
-        padding: 8px;
         border: none;
         resize: none;
         outline: none;
