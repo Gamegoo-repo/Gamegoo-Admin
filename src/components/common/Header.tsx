@@ -2,10 +2,21 @@ import styled from "styled-components";
 import { theme } from "../../styles/theme";
 import { useNavigate } from "react-router-dom";
 import Button from "./Button";
+import { postLogout } from "../../api/login";
+import { clearTokens } from "../../utils/storage";
 
 const Header = () => {
   const navigate = useNavigate();
 
+  const handleLogout = async () => {
+    try {
+      await postLogout();
+      await clearTokens();
+      navigate("/login");
+    } catch {
+      console.error("로그아웃 오류");
+    }
+  };
   return (
     <Layout>
       <Container>
@@ -23,6 +34,7 @@ const Header = () => {
           width="72px"
           height="32px"
           fontSize="bold16"
+          onClick={handleLogout}
         />
       </Container>
     </Layout>

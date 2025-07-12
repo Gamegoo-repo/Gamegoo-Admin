@@ -3,6 +3,7 @@ import Button from "../components/common/Button";
 
 const MainPage = () => {
   const navigate = useNavigate();
+
   return (
     <div>
       <li>

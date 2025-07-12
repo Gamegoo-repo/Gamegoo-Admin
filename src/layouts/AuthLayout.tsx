@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { getAccessToken } from "../utils/storage";
 
 const AuthLayout = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -8,18 +9,15 @@ const AuthLayout = () => {
 
   useEffect(() => {
     const checkAuthStatus = () => {
-      // const token = "";
-      // setIsAuthenticated(Boolean(token));
-      setIsAuthenticated(true);
+      const token = getAccessToken();
+      setIsAuthenticated(!!token);
       setIsLoading(false);
     };
 
     checkAuthStatus();
   }, []);
 
-  if (isLoading) {
-    return <></>;
-  }
+  if (isLoading) return null;
 
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
