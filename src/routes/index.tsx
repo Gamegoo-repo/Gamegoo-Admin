@@ -7,6 +7,10 @@ import LoginPage from "../pages/LoginPage";
 
 const router = createBrowserRouter([
   {
+    path: "login",
+    element: <LoginPage />,
+  },
+  {
     path: "/",
     element: <AuthLayout />,
     children: [
@@ -17,10 +21,6 @@ const router = createBrowserRouter([
           { index: true, element: <MainPage /> },
           { path: "report", element: <ReportPage /> },
         ],
-      },
-      {
-        path: "login",
-        element: <LoginPage />,
       },
     ],
   },
