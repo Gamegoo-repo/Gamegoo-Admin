@@ -15,6 +15,7 @@ export class PostProcessor {
     await this.reorganizeTypesByDomain();
     await this.processTypeIndex();
     await this.extractCommonEnums();
+    await this.cleanupUnusedImportsAndEmptyExports();
   }
 
   private async processApiIndex(): Promise<void> {
@@ -93,7 +94,7 @@ export class PostProcessor {
     await this.updateImportPaths(typesDir, mergedFileInfo);
 
     // Clean up old files
-    await this.cleanupOldFiles(typesDir, typeFiles);
+    await this.cleanupOldFiles(typesDir);
 
     console.info("✅ Type reorganization completed");
   }
@@ -434,9 +435,9 @@ export class PostProcessor {
           /from ["']\.\/([^"']+)(-response|-request)["']/
         );
         if (importMatch) {
-          const [fullMatch, baseName, suffix] = importMatch;
+          const [fullMatch, baseName] = importMatch;
           // Find the correct domain and path
-          const newPath = await this.findCorrectImportPath(baseName, filePath);
+          const newPath = await this.findCorrectImportPath(baseName);
           if (newPath) {
             const newImport = `from "${newPath}"`;
             content = content.replace(fullMatch, newImport);
@@ -452,10 +453,8 @@ export class PostProcessor {
   }
 
   private async findCorrectImportPath(
-    baseName: string,
-    currentFilePath: string
+    baseName: string
   ): Promise<string | null> {
-    const currentDir = path.dirname(currentFilePath);
     const typesDir = path.join(this.outputDir, "types");
 
     // Common mappings for known files
@@ -483,10 +482,7 @@ export class PostProcessor {
     return null;
   }
 
-  private async cleanupOldFiles(
-    typesDir: string,
-    movedFiles: string[]
-  ): Promise<void> {
+  private async cleanupOldFiles(typesDir: string): Promise<void> {
     // Remove api-response wrapper files
     const files = await fs.readdir(typesDir);
     const wrapperFiles = files.filter(
@@ -694,5 +690,117 @@ export class PostProcessor {
     if (hasChanges) {
       await fs.writeFile(filePath, content);
     }
+  }
+
+  private async cleanupUnusedImportsAndEmptyExports(): Promise<void> {
+    console.info("🧹 Cleaning up unused imports and empty exports...");
+
+    const typesDir = path.join(this.outputDir, "types");
+    await this.cleanupDirectory(typesDir);
+
+    console.info("✅ Unused imports and empty exports cleanup completed");
+  }
+
+  private async cleanupDirectory(dir: string): Promise<void> {
+    const items = await fs.readdir(dir);
+
+    for (const item of items) {
+      const itemPath = path.join(dir, item);
+      const stat = await fs.stat(itemPath);
+
+      if (stat.isDirectory()) {
+        await this.cleanupDirectory(itemPath);
+      } else if (item.endsWith(".ts") && item !== "index.ts") {
+        await this.cleanupFile(itemPath);
+      }
+    }
+  }
+
+  private async cleanupFile(filePath: string): Promise<void> {
+    const originalContent = await fs.readFile(filePath, "utf8");
+    let content = originalContent;
+    let hasChanges = false;
+
+    // 빈 enum export 제거
+    const cleanedEnumContent = content.replace(
+      /\/\*\*\s*\*\s*@export\s*\*\s*@enum\s*\{[^}]*\}\s*\*\/\s*/g,
+      ""
+    );
+    if (cleanedEnumContent !== content) {
+      content = cleanedEnumContent;
+      hasChanges = true;
+    }
+
+    // 사용되지 않는 import 제거
+    const { cleanedContent, changed } = this.removeUnusedImports(content);
+    if (changed) {
+      content = cleanedContent;
+      hasChanges = true;
+    }
+
+    if (hasChanges) {
+      await fs.writeFile(filePath, content);
+      console.info(
+        chalk.gray(`  ✓ Cleaned up ${path.relative(this.outputDir, filePath)}`)
+      );
+    }
+  }
+
+  private removeUnusedImports(content: string): {
+    cleanedContent: string;
+    changed: boolean;
+  } {
+    const lines = content.split("\n");
+    let hasChanges = false;
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+
+      // import 구문 찾기
+      const importMatch = line.match(
+        /import\s*\{\s*([^}]+)\s*\}\s*from\s*["']([^"']+)["']/
+      );
+      if (importMatch) {
+        const importedItems = importMatch[1]
+          .split(",")
+          .map((item) => item.trim())
+          .filter((item) => item.length > 0);
+
+        const usedItems = importedItems.filter((item) => {
+          // 해당 item이 파일 내에서 실제로 사용되는지 확인
+          const regex = new RegExp(`\\b${item}\\b`, "g");
+          const matches = content.match(regex);
+          // import 문 자체에서의 매치는 제외하고 실제 사용 확인
+          return matches && matches.length > 1;
+        });
+
+        if (usedItems.length !== importedItems.length) {
+          if (usedItems.length === 0) {
+            // 모든 import가 사용되지 않으면 전체 라인 제거
+            lines[i] = "";
+          } else {
+            // 일부만 사용되면 사용되는 것만 남기기
+            const importPath = importMatch[2];
+            lines[i] =
+              `import { ${usedItems.join(", ")} } from "${importPath}";`;
+          }
+          hasChanges = true;
+        }
+      }
+    }
+
+    // 빈 라인 정리
+    const cleanedLines = lines.filter((line, index) => {
+      // 연속된 빈 라인 제거 (최대 1개까지만 허용)
+      if (line.trim() === "") {
+        return index === 0 || lines[index - 1].trim() !== "";
+      }
+      return true;
+    });
+
+    return {
+      cleanedContent: cleanedLines.join("\n"),
+      changed: hasChanges,
+    };
   }
 }
