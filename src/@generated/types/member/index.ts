@@ -1,1 +1,1 @@
-export * from './member-recent-stats'
+export * from "./member-recent-stats";
