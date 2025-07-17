@@ -1,9 +1,10 @@
-import styled from "styled-components";
-import { theme } from "../../styles/theme";
 import { useNavigate } from "react-router-dom";
-import Button from "./Button";
+import styled from "styled-components";
+
 import { postLogout } from "../../api/login";
+import { theme } from "../../styles/theme";
 import { clearTokens } from "../../utils/storage";
+import Button from "./Button";
 
 const Header = () => {
   const navigate = useNavigate();

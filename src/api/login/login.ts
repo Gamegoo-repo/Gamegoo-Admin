@@ -1,7 +1,6 @@
 import { LoginRequest, LoginResponse } from "../../types/api/login";
 import Axios from "../api";
 
-
 export const postLogin = async ({
   email,
   password,

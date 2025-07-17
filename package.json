@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "format": "prettier --write .",
-		"postinstall": "git config core.hooksPath .githooks"
+    "postinstall": "git config core.hooksPath .githooks"
   },
   "dependencies": {
     "@types/react-date-range": "^1.4.10",

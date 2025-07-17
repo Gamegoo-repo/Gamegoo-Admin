@@ -1,6 +1,5 @@
 import { STORAGE_KEY } from "../constants/storage";
 
-
 export const setId = (id: number, autoLogin: boolean) => {
   if (typeof window !== "undefined") {
     const storage = autoLogin ? localStorage : sessionStorage;
@@ -40,7 +39,6 @@ export const getName = () => {
   }
   return null;
 };
-
 
 /* 유저 id 사용 */
 export const getUserId = () => {

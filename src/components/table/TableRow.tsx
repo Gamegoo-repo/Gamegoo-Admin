@@ -1,8 +1,9 @@
 import styled from "styled-components";
+
 import { theme } from "../../styles/theme";
-import Label from "../common/Label";
 import { TableData } from "../../types/table/table";
 import Checkbox from "../common/Checkbox";
+import Label from "../common/Label";
 
 export const TableRow = ({
   row,
