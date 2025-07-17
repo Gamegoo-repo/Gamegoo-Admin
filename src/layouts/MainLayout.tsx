@@ -7,9 +7,13 @@ import Header from "../components/common/Header";
 const MainLayout = () => {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    navigate("/report");
-  }, []);
+  useEffect(
+    () => {
+      navigate("/report");
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
 
   return (
     <Layout>

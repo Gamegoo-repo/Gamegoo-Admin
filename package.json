@@ -9,10 +9,11 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "format": "prettier --write .",
-		"generate": "tsx scripts/generate-api.ts && eslint --fix src/@generated && prettier --write src/@generated",
+    "generate": "tsx scripts/generate-api.ts && eslint --fix src/@generated && prettier --write src/@generated",
     "postinstall": "git config core.hooksPath .githooks"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.83.0",
     "@types/react-date-range": "^1.4.10",
     "axios": "^1.10.0",
     "date-fns": "^4.1.0",
@@ -26,7 +27,7 @@
   "devDependencies": {
     "@eslint/js": "^9.21.0",
     "@ianvs/prettier-plugin-sort-imports": "^4.4.2",
-		"@openapitools/openapi-generator-cli": "^2.20.2",
+    "@openapitools/openapi-generator-cli": "^2.20.2",
     "@types/node": "^24.0.14",
     "@types/react": "^19.0.10",
     "@types/react-datepicker": "^7.0.0",
@@ -37,9 +38,9 @@
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^15.15.0",
     "prettier": "^3.4.2",
+    "tsx": "^4.20.3",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.24.1",
-    "vite": "^6.2.0",
-		"tsx": "^4.20.3"
+    "vite": "^6.2.0"
   }
 }
