@@ -1,7 +1,8 @@
 import styled from "styled-components";
-import Checkbox from "../common/Checkbox";
+
 import { theme } from "../../styles/theme";
 import { ReportCountRange } from "../../types/filter/filter";
+import Checkbox from "../common/Checkbox";
 
 interface ReportCountFilterProps {
   label: string;

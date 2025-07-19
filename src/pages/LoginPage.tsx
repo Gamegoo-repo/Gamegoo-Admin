@@ -1,14 +1,14 @@
-import React from "react";
-import { useEffect, useState } from "react";
-import styled from "styled-components";
-import { theme } from "../styles/theme";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { emailRegEx } from "../utils/regEx";
-import Button from "../components/common/Button";
-import { STORAGE_KEY } from "../constants/storage";
-import LoginInput from "../components/login/LoginInput";
+import styled from "styled-components";
+
 import { postLogin } from "../api/login";
+import Button from "../components/common/Button";
 import LoginCheckbox from "../components/login/LoginCheckbox";
+import LoginInput from "../components/login/LoginInput";
+import { STORAGE_KEY } from "../constants/storage";
+import { theme } from "../styles/theme";
+import { emailRegEx } from "../utils/regEx";
 
 const LoginPage = () => {
   const navigate = useNavigate();

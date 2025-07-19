@@ -1,6 +1,7 @@
 import React from "react";
-import { theme } from "../../styles/theme";
 import styled, { css } from "styled-components";
+
+import { theme } from "../../styles/theme";
 
 interface ButtonProps {
   variant?: "primary" | "secondary" | "default";
@@ -65,7 +66,9 @@ const StyledButton = styled.button<{
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: color 200ms, background-color 200ms;
+  transition:
+    color 200ms,
+    background-color 200ms;
 
   &.primary {
     background: ${theme.colors.violet600};

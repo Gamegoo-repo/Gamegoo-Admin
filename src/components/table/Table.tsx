@@ -1,9 +1,10 @@
 import React, { useState } from "react";
+import styled from "styled-components";
+
+import { TableData } from "../../types/table/table";
+import Pagination from "../common/Pagination";
 import { TableHeader } from "./TableHeader";
 import { TableRow } from "./TableRow";
-import Pagination from "../common/Pagination";
-import styled from "styled-components";
-import { TableData } from "../../types/table/table";
 
 interface TableProps {
   data: TableData[];
