@@ -5,10 +5,10 @@ import styled from "styled-components";
 import { AuthAxios } from "@/api";
 import { Label, Title } from "@/components/common";
 import Table from "@/components/table/Table";
-import { COLUMNS } from "@/constants/table/columns";
 
-import TopFilterContainer from "./components/TopFilterContainer";
-import { getFilterParams } from "./utils/searchParam";
+import { TopFilterContainer } from "./components";
+import { COLUMNS } from "./constants";
+import { getFilterParams } from "./utils";
 
 const ReportPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
