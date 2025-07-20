@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
-import { DropdownOption } from "../../constants/dropdown";
+import { DropdownOption } from "@/types/filter/filter";
+
 import { theme } from "../../styles/theme";
 
 type DropdownProps = {
   label: string;
-  options: DropdownOption[];
+  options: readonly DropdownOption[];
   onSelect?: (option: DropdownOption) => void;
 };
 

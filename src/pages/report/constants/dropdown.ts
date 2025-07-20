@@ -1,9 +1,6 @@
-export type DropdownOption = {
-  id: number;
-  label: string;
-};
+import { DropdownOption } from "@/types/filter/filter";
 
-export const ACCOUNT: DropdownOption[] = [
+export const ACCOUNT: readonly DropdownOption[] = Object.freeze([
   {
     id: 0,
     label: "경고",
@@ -40,9 +37,9 @@ export const ACCOUNT: DropdownOption[] = [
     id: 8,
     label: "영구 정지",
   },
-];
+]);
 
-export const SORT: DropdownOption[] = [
+export const SORT: readonly DropdownOption[] = Object.freeze([
   {
     id: 0,
     label: "최신순",
@@ -51,4 +48,4 @@ export const SORT: DropdownOption[] = [
     id: 1,
     label: "오래된순",
   },
-];
+]);

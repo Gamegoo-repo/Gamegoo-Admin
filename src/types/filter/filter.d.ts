@@ -3,8 +3,8 @@ export type FieldType = "input" | "dropdown" | "calendar" | "range";
 
 // 드롭다운 옵션
 export interface DropdownOption {
+  id: number;
   label: string;
-  value: string;
 }
 
 // 필드 구성 정보
