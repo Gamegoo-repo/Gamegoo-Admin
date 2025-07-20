@@ -29,7 +29,14 @@ const ReportPage = () => {
         item.reportType, // 신고 사유
         item.content, // 상세 내용
         `${item.fromMemberName}#${item.fromMemberTag}`, // 신고자
-        item.createdAt, // 접수 일시
+        new Date(item.createdAt).toLocaleString("ko-KR", {
+          year: "numeric",
+          month: "numeric",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        }), // 접수 일시
         "", // TODO: 누적 횟수 (추후 추가 필요)
         item.path, // 신고 경로
       ]);
