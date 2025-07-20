@@ -1,14 +1,35 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import styled from "styled-components";
 
+import { AuthAxios } from "@/api";
 import { Label, Title } from "@/components/common";
 import Table from "@/components/table/Table";
 import { COLUMNS } from "@/constants/table/columns";
-import { TABLE_DUMMY } from "@/constants/table/dummy";
 
 import TopFilterContainer from "./components/TopFilterContainer";
 
 const ReportPage = () => {
+  const { data } = useQuery({
+    queryKey: ["report"],
+    queryFn: async () => {
+      const response = await AuthAxios.get("/api/v2/report/list", {
+        params: {
+          page: 0,
+          size: 10,
+        },
+      });
+
+      const filteredData = response.data.data.map((item: any) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { path, createdAt, ...rest } = item;
+        return rest;
+      });
+
+      return filteredData;
+    },
+  });
+
   const [currentPage, setCurrentPage] = useState<number>(1);
   const totalPages = 20;
 
@@ -21,7 +42,7 @@ const ReportPage = () => {
       <Title title="신고 유저 목록" />
       <TopFilterContainer />
       <Table
-        data={TABLE_DUMMY}
+        data={data}
         columns={COLUMNS}
         currentPage={currentPage}
         totalPages={totalPages}

@@ -2,20 +2,15 @@ import { useState } from "react";
 import styled from "styled-components";
 
 import { Button, Input } from "@/components/common";
-import ReportCountFilter from "@/components/filter/ReportCountFilter";
+import ReportCountFilter from "@/pages/report/components/ReportCountFilter";
 import { theme } from "@/styles/theme";
 
 import { FIELDS } from "../../../constants/filter";
-import { FilterValues, ReportCountRange } from "../../../types/filter/filter";
+import { FilterValues } from "../../../types/filter/filter";
 
 const AdvancedFilter = ({ isOpen }: { isOpen: boolean }) => {
   // 필터 입력 상태
   const [formValues, setFormValues] = useState<FilterValues>({});
-  const [reportCountRange, setReportCountRange] = useState<ReportCountRange>({
-    min: "",
-    max: "",
-  });
-  const [isRange, setIsRange] = useState<boolean>(false);
 
   if (!isOpen) {
     return null;
@@ -25,16 +20,7 @@ const AdvancedFilter = ({ isOpen }: { isOpen: boolean }) => {
     <FilterContainer>
       {FIELDS.map((field, index) => {
         if (field.type === "range") {
-          return (
-            <ReportCountFilter
-              key={index}
-              label={field.key}
-              value={reportCountRange}
-              isRange={isRange}
-              onChange={setReportCountRange}
-              onToggleRange={() => setIsRange(!isRange)}
-            />
-          );
+          return <ReportCountFilter key={index} label={field.key} />;
         }
 
         return (

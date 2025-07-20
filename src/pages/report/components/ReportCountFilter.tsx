@@ -1,49 +1,57 @@
+import { useState } from "react";
 import styled from "styled-components";
 
-import { theme } from "../../styles/theme";
-import { ReportCountRange } from "../../types/filter/filter";
-import Checkbox from "../common/Checkbox";
+import Checkbox from "../../../components/common/Checkbox";
+import { theme } from "../../../styles/theme";
+import { ReportCountRange } from "../../../types/filter/filter";
 
 interface ReportCountFilterProps {
   label: string;
-  value: ReportCountRange;
-  isRange: boolean;
-  onChange: (val: ReportCountRange) => void;
-  onToggleRange: () => void;
 }
 
-const ReportCountFilter = ({
-  label,
-  value,
-  isRange,
-  onChange,
-  onToggleRange,
-}: ReportCountFilterProps) => {
+const ReportCountFilter = ({ label }: ReportCountFilterProps) => {
+  // exact 또는 range 선택
+  const [isRange, setIsRange] = useState<boolean>(false);
+
+  const [reportCountRange, setReportCountRange] = useState<ReportCountRange>({
+    min: "",
+    max: "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setReportCountRange({
+      ...reportCountRange,
+      [e.target.name]: e.target.value,
+    });
+  };
+
   return (
     <Wrapper>
       <StyledLabel>{label}</StyledLabel>
       <RangeArea>
         <InputWrapper>
           <StyledInput
+            name="min"
             type="number"
-            value={value.min}
-            onChange={(e) => onChange({ ...value, min: e.target.value })}
+            value={reportCountRange.min}
+            onChange={handleChange}
             placeholder="회"
           />
           {isRange && (
             <>
               <RangeSeparator>~</RangeSeparator>
               <StyledInput
+                name="max"
                 type="number"
-                value={value.max}
-                onChange={(e) => onChange({ ...value, max: e.target.value })}
+                value={reportCountRange.max}
+                onChange={handleChange}
                 placeholder="회"
               />
             </>
           )}
         </InputWrapper>
         <CheckboxWrapper>
-          <Checkbox checked={isRange} onChange={onToggleRange} />
+          <Checkbox checked={isRange} onChange={() => setIsRange(!isRange)} />
           <CheckboxLabel>범위</CheckboxLabel>
         </CheckboxWrapper>
       </RangeArea>
