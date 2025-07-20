@@ -5,12 +5,15 @@ export type FieldType = "input" | "dropdown" | "calendar" | "range";
 export interface DropdownOption {
   id: number;
   label: string;
+  value: string;
 }
 
 // 필드 구성 정보
 export interface FieldConfig {
   key: string;
   type: FieldType;
+  label: string;
+  placeholder?: string;
   options?: DropdownOption[]; // dropdown일 때만 사용
 }
 

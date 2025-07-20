@@ -1,28 +1,60 @@
-import { useState } from "react";
 import styled from "styled-components";
 
 import Checkbox from "../../../components/common/Checkbox";
 import { theme } from "../../../styles/theme";
-import { ReportCountRange } from "../../../types/filter/filter";
 
 interface ReportCountFilterProps {
   label: string;
+  exactValue: string;
+  minValue: string;
+  maxValue: string;
+  isRange: boolean;
+  onExactChange: (value: string) => void;
+  onMinChange: (value: string) => void;
+  onMaxChange: (value: string) => void;
+  onRangeToggle: (isRange: boolean) => void;
 }
 
-const ReportCountFilter = ({ label }: ReportCountFilterProps) => {
-  // exact 또는 range 선택
-  const [isRange, setIsRange] = useState<boolean>(false);
+const ReportCountFilter = ({
+  label,
+  exactValue,
+  minValue,
+  maxValue,
+  isRange,
+  onExactChange,
+  onMinChange,
+  onMaxChange,
+  onRangeToggle,
+}: ReportCountFilterProps) => {
+  const handleExactChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onExactChange(e.target.value);
+  };
 
-  const [reportCountRange, setReportCountRange] = useState<ReportCountRange>({
-    min: "",
-    max: "",
-  });
+  const handleMinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onMinChange(e.target.value);
+  };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setReportCountRange({
-      ...reportCountRange,
-      [e.target.name]: e.target.value,
-    });
+  const handleMaxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onMaxChange(e.target.value);
+  };
+
+  const handleRangeToggle = () => {
+    // 범위 모드 전환 시 값들 초기화
+    if (!isRange) {
+      // exact -> range 모드로 전환 시 exact 값을 min으로 복사하고 exact 초기화
+      if (exactValue) {
+        onMinChange(exactValue);
+        onExactChange("");
+      }
+    } else {
+      // range -> exact 모드로 전환 시 min 값을 exact로 복사하고 min/max 초기화
+      if (minValue) {
+        onExactChange(minValue);
+      }
+      onMinChange("");
+      onMaxChange("");
+    }
+    onRangeToggle(!isRange);
   };
 
   return (
@@ -30,28 +62,36 @@ const ReportCountFilter = ({ label }: ReportCountFilterProps) => {
       <StyledLabel>{label}</StyledLabel>
       <RangeArea>
         <InputWrapper>
-          <StyledInput
-            name="min"
-            type="number"
-            value={reportCountRange.min}
-            onChange={handleChange}
-            placeholder="회"
-          />
-          {isRange && (
+          {isRange ? (
             <>
+              <StyledInput
+                name="min"
+                type="number"
+                value={minValue}
+                onChange={handleMinChange}
+                placeholder="최소값"
+              />
               <RangeSeparator>~</RangeSeparator>
               <StyledInput
                 name="max"
                 type="number"
-                value={reportCountRange.max}
-                onChange={handleChange}
-                placeholder="회"
+                value={maxValue}
+                onChange={handleMaxChange}
+                placeholder="최대값"
               />
             </>
+          ) : (
+            <StyledInput
+              name="exact"
+              type="number"
+              value={exactValue}
+              onChange={handleExactChange}
+              placeholder="정확한 횟수"
+            />
           )}
         </InputWrapper>
         <CheckboxWrapper>
-          <Checkbox checked={isRange} onChange={() => setIsRange(!isRange)} />
+          <Checkbox checked={isRange} onChange={handleRangeToggle} />
           <CheckboxLabel>범위</CheckboxLabel>
         </CheckboxWrapper>
       </RangeArea>

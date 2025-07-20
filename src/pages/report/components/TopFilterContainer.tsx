@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { SetURLSearchParams } from "react-router-dom";
 import styled from "styled-components";
 
 import { Button, Dropdown } from "@/components/common";
@@ -7,7 +8,15 @@ import { theme } from "@/styles/theme";
 
 import AdvancedFilter from "./AdvancedFilter";
 
-const TopFilterContainer = () => {
+interface TopFilterContainerProps {
+  searchParams: URLSearchParams;
+  setSearchParams: SetURLSearchParams;
+}
+
+const TopFilterContainer = ({
+  searchParams,
+  setSearchParams,
+}: TopFilterContainerProps) => {
   const [isAdvancedFilterOpen, setIsAdvancedFilterOpen] =
     useState<boolean>(false);
 
@@ -35,7 +44,11 @@ const TopFilterContainer = () => {
           <Dropdown label="최신순" options={SORT} />
         </Filter>
       </TopWrapper>
-      <AdvancedFilter isOpen={isAdvancedFilterOpen} />
+      <AdvancedFilter
+        isOpen={isAdvancedFilterOpen}
+        searchParams={searchParams}
+        setSearchParams={setSearchParams}
+      />
     </TopContainer>
   );
 };
