@@ -12,6 +12,7 @@ import "react-date-range/dist/theme/default.css";
 interface Option {
   id: number;
   label: string;
+  value: string;
 }
 
 interface InputProps {
