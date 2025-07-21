@@ -14,6 +14,7 @@ import Champion from "./Champion";
 import GameStyle from "./GameStyle";
 import PositionBox from "./PositionBox";
 import QueueType from "./QueueType";
+import WinningRate from "./WinningRate";
 
 interface PostDetailModalProps {
   isOpen: boolean;
@@ -109,9 +110,9 @@ const PostDetailModal = ({ isOpen, postId, onClose }: PostDetailModalProps) => {
                   list={data?.championStatsResponseList}
                 />
               </ChampionNQueueSection>
-              <WinningRateSection
-                $gameType={data.gameMode}
-              ></WinningRateSection>
+              <WinningRateSection $gameType={data.gameMode}>
+                <WinningRate completed={data.winRate || 0} />
+              </WinningRateSection>
               <StyleSection $gameType={data.gameMode}>
                 <Title>게임 스타일</Title>
                 <GameStyle styles={data.gameStyles} />

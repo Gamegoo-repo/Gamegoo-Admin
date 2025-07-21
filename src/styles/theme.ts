@@ -34,6 +34,12 @@ const colors = {
   green500: "#69D180",
   green600: "#41BF5D",
   green900: "#165524",
+
+  // 승률 progressbar
+  redViolet: "#CA1FCF",
+
+  gradient: "linear-gradient(90deg, #5A42EE 0%, #E02FC8 100%)",
+  gradientMobile: "linear-gradient(50.55deg, #5A42EE -0.63%, #E02FC8 100.32%)",
 } as const;
 
 interface Font {
