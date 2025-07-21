@@ -1,5 +1,5 @@
 import { createPortal } from "react-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import styled from "styled-components";
 
 import { GameModeEnum, MainPEnum } from "@/@generated/types";
@@ -18,11 +18,19 @@ import WinningRate from "./WinningRate";
 
 interface PostDetailModalProps {
   isOpen: boolean;
+  reportId?: number;
   postId?: number;
   onClose: () => void;
 }
 
-const PostDetailModal = ({ isOpen, postId, onClose }: PostDetailModalProps) => {
+const PostDetailModal = ({
+  isOpen,
+  reportId,
+  postId,
+  onClose,
+}: PostDetailModalProps) => {
+  const queryClient = useQueryClient();
+
   const { data } = useQuery({
     queryKey: ["post", postId],
     queryFn: () =>
@@ -31,7 +39,22 @@ const PostDetailModal = ({ isOpen, postId, onClose }: PostDetailModalProps) => {
       ),
   });
 
+  const { mutate: deletePost } = useMutation({
+    mutationFn: () => {
+      if (!reportId) return Promise.reject(new Error("reportId is required"));
+      return AuthAxios.delete(`/api/v2/report/${reportId}/post`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["post"] });
+      onClose();
+    },
+  });
+
   if (!isOpen || !data) return null;
+
+  const handleDeletePost = () => {
+    deletePost();
+  };
 
   const modalRoot = document.getElementById("modal-root") as HTMLElement;
   if (!modalRoot) {
@@ -123,6 +146,7 @@ const PostDetailModal = ({ isOpen, postId, onClose }: PostDetailModalProps) => {
                   <MemoData>{data.contents}</MemoData>
                 </Memo>
               </MemoSection>
+              <DeleteButton onClick={handleDeletePost}>삭제하기</DeleteButton>
             </ContentWrapper>
           </MainContent>
         </Main>
@@ -144,31 +168,27 @@ const Overlay = styled.div`
   background: #0000009c;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   overflow-y: auto;
   overflow-x: hidden;
+  padding: 50px 20px;
 `;
 
 const Wrapper = styled.div`
   border-radius: 20px;
   max-width: 580px;
   width: 100%;
-  min-height: 600px;
-  max-height: 90vh;
-  margin: 20px;
+  margin: 0 auto;
   padding: 48px 32px 32px 32px;
   background: ${theme.colors.gray100};
   box-shadow: 0 4px 96.4px 0 #00000040;
   position: relative;
-  overflow-y: auto;
 
   @media (max-width: ${theme.breakpoints.mobile}) {
     padding: 20.5px 20px;
     border-radius: 8px;
     min-width: 336px;
     width: 90vw;
-    margin: 20px;
-    max-height: 90vh;
   }
 `;
 
@@ -283,15 +303,18 @@ const ChampionNQueueSection = styled.div`
 const PositionSection = styled.div``;
 
 const WinningRateSection = styled.div<{ $gameType: GameModeEnum }>`
-  margin-top: ${({ $gameType }) => ($gameType !== "ARAM" ? "0px" : "46px")};
+  margin-top: ${({ $gameType }) =>
+    $gameType !== GameModeEnum.ARAM ? "0px" : "46px"};
 `;
 
 const StyleSection = styled.div<{ $gameType: GameModeEnum }>`
-  margin-top: ${({ $gameType }) => ($gameType !== "ARAM" ? "0px" : "46px")};
+  margin-top: ${({ $gameType }) =>
+    $gameType !== GameModeEnum.ARAM ? "0px" : "46px"};
 `;
 
 const MemoSection = styled.div<{ $gameType: GameModeEnum }>`
-  margin-top: ${({ $gameType }) => ($gameType !== "ARAM" ? "0px" : "46px")};
+  margin-top: ${({ $gameType }) =>
+    $gameType !== GameModeEnum.ARAM ? "0px" : "46px"};
 `;
 
 const Memo = styled.div`
@@ -316,4 +339,16 @@ const MemoData = styled.p`
   @media (max-width: ${theme.breakpoints.mobile}) {
     ${(props) => props.theme.fonts.regular12};
   }
+`;
+
+const DeleteButton = styled.button`
+  margin: 30px 0 28px;
+  background: ${theme.colors.red600};
+  color: ${theme.colors.white};
+  height: 3.5rem;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: center;
 `;

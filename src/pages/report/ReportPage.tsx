@@ -16,6 +16,9 @@ const ReportPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState<number | undefined>();
+  const [selectedReportId, setSelectedReportId] = useState<
+    number | undefined
+  >();
 
   const currentPage = Number(searchParams.get("page")) || 1;
 
@@ -57,8 +60,9 @@ const ReportPage = () => {
   };
 
   const handleShowPostDetail = (reportId: number) => {
-    // reportId를 postId로 사용 (실제로는 row에서 boardId나 postId를 가져와야 할 수도 있음)
+    // TODO: postId 수정 필요
     setSelectedPostId(reportId);
+    setSelectedReportId(reportId);
     setIsModalOpen(true);
   };
 
@@ -93,6 +97,7 @@ const ReportPage = () => {
       </Layout>
       <PostDetailModal
         isOpen={isModalOpen}
+        reportId={selectedReportId}
         postId={selectedPostId}
         onClose={handleCloseModal}
       />
