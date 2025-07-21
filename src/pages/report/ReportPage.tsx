@@ -13,39 +13,38 @@ import { getFilterParams } from "./utils";
 const ReportPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // URL params에서 값 읽기
   const currentPage = Number(searchParams.get("page")) || 1;
 
-  const { data } = useQuery({
+  const { data = { reports: [], totalPages: 0 } } = useQuery({
     queryKey: ["report", searchParams.toString()],
     queryFn: async () => {
       const params = getFilterParams(searchParams);
       const response = await AuthAxios.get("/api/v2/report/list", { params });
 
-      const transformedData = response.data.data.map((item: any) => [
-        item.reportId, // 신고 번호
-        "", // TODO: 계정 상태 (추후 추가 필요)
-        `${item.toMemberName}#${item.toMemberTag}`, // 비매너 소환사명
-        item.reportType, // 신고 사유
-        item.content, // 상세 내용
-        `${item.fromMemberName}#${item.fromMemberTag}`, // 신고자
-        new Date(item.createdAt).toLocaleString("ko-KR", {
-          year: "numeric",
-          month: "numeric",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: false,
-        }), // 접수 일시
-        "", // TODO: 누적 횟수 (추후 추가 필요)
-        item.path, // 신고 경로
-      ]);
-
-      return transformedData;
+      return response.data.data;
     },
   });
 
-  const totalPages = 20; // TODO: API에서 받아오도록 수정 필요
+  const tableData = data.reports.map((item: any) => [
+    item.reportId, // 신고 번호
+    "", // TODO: 계정 상태 (추후 추가 필요)
+    `${item.toMemberName}#${item.toMemberTag}`, // 비매너 소환사명
+    item.reportType, // 신고 사유
+    item.content, // 상세 내용
+    `${item.fromMemberName}#${item.fromMemberTag}`, // 신고자
+    new Date(item.createdAt).toLocaleString("ko-KR", {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    }), // 접수 일시
+    "", // TODO: 누적 횟수 (추후 추가 필요)
+    item.path, // 신고 경로
+  ]);
+
+  const totalPages = data.totalPages;
 
   const handlePageChange = (page: number) => {
     const newParams = new URLSearchParams(searchParams);
@@ -61,7 +60,7 @@ const ReportPage = () => {
         setSearchParams={setSearchParams}
       />
       <Table
-        data={data}
+        data={tableData}
         columns={COLUMNS}
         currentPage={currentPage}
         totalPages={totalPages}
@@ -85,4 +84,5 @@ const Layout = styled.div`
   align-items: flex-start;
   padding: 0 20px;
   gap: 24px;
+  overflow-y: auto;
 `;
