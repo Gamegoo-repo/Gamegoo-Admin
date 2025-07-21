@@ -1,6 +1,12 @@
 import { TableColumn } from "@/types/table/table";
 
-export const getReportTableColumns = (): TableColumn[] => [
+interface ColumnCallbacks {
+  onShowPostDetail?: (reportId: number) => void;
+}
+
+export const getReportTableColumns = (
+  callbacks: ColumnCallbacks = {}
+): TableColumn[] => [
   {
     key: "reportId",
     header: "번호",
@@ -45,12 +51,29 @@ export const getReportTableColumns = (): TableColumn[] => [
     key: "path",
     header: "페이지",
     width: "120px",
-    render: (value) => {
+    render: (value, row) => {
       if (value === "BOARD") {
+        const handleClick = () => {
+          if (callbacks.onShowPostDetail) {
+            callbacks.onShowPostDetail(row.reportId);
+          }
+        };
+
         return (
-          <p style={{ color: "red", margin: 0 }}>
+          <button
+            onClick={handleClick}
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              color: "red",
+              margin: 0,
+              padding: 0,
+              fontSize: "inherit",
+            }}
+          >
             <span style={{ textDecoration: "underline" }}>게시판</span> x
-          </p>
+          </button>
         );
       }
       if (value === "PROFILE") {
