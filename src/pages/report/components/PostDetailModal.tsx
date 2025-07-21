@@ -131,21 +131,6 @@ const Overlay = styled.div`
   align-items: center;
   overflow-y: auto;
   overflow-x: hidden;
-
-  /* 스크롤바 */
-  &::-webkit-scrollbar {
-    width: 20px;
-    display: none;
-  }
-  &::-webkit-scrollbar-thumb {
-    border-radius: 26px;
-    background: ${theme.colors.gray500};
-    background-clip: padding-box;
-    border: 6px solid transparent;
-  }
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
 `;
 
 const Wrapper = styled.div`
@@ -160,20 +145,6 @@ const Wrapper = styled.div`
   box-shadow: 0 4px 96.4px 0 #00000040;
   position: relative;
   overflow-y: auto;
-
-  /* 스크롤바 */
-  &::-webkit-scrollbar {
-    width: 20px;
-  }
-  &::-webkit-scrollbar-thumb {
-    border-radius: 26px;
-    background: ${theme.colors.gray500};
-    background-clip: padding-box;
-    border: 6px solid transparent;
-  }
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
 
   @media (max-width: ${theme.breakpoints.mobile}) {
     padding: 20.5px 20px;
@@ -315,20 +286,6 @@ const Memo = styled.div`
   border-radius: 15px;
   border: 1px solid ${theme.colors.gray400};
   overflow-y: scroll;
-
-  /* 스크롤바 */
-  &::-webkit-scrollbar {
-    width: 16px;
-  }
-  &::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    background: ${theme.colors.gray500};
-    background-clip: padding-box;
-    border: 6px solid transparent;
-  }
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
 
   @media (max-width: ${theme.breakpoints.mobile}) {
     border-radius: 6px;
