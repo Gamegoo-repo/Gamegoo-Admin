@@ -7,7 +7,7 @@ import { Label, Title } from "@/components/common";
 import Table from "@/components/table/Table";
 
 import { TopFilterContainer } from "./components";
-import { COLUMNS } from "./constants";
+import { getReportTableColumns } from "./constants";
 import { getFilterParams } from "./utils";
 
 const ReportPage = () => {
@@ -25,24 +25,24 @@ const ReportPage = () => {
     },
   });
 
-  const tableData = data.reports.map((item: any) => [
-    item.reportId, // 신고 번호
-    "", // TODO: 계정 상태 (추후 추가 필요)
-    `${item.toMemberName}#${item.toMemberTag}`, // 비매너 소환사명
-    item.reportType, // 신고 사유
-    item.content, // 상세 내용
-    `${item.fromMemberName}#${item.fromMemberTag}`, // 신고자
-    new Date(item.createdAt).toLocaleString("ko-KR", {
+  const tableData = data.reports.map((item: any) => ({
+    reportId: item.reportId,
+    state: "", // TODO: 계정 상태 (추후 추가 필요)
+    targetMember: `${item.toMemberName}#${item.toMemberTag}`,
+    reportType: item.reportType,
+    content: item.content,
+    reporter: `${item.fromMemberName}#${item.fromMemberTag}`,
+    createdAt: new Date(item.createdAt).toLocaleString("ko-KR", {
       year: "numeric",
       month: "numeric",
       day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
       hour12: false,
-    }), // 접수 일시
-    "", // TODO: 누적 횟수 (추후 추가 필요)
-    item.path, // 신고 경로
-  ]);
+    }),
+    reportCount: "", // TODO: 누적 횟수 (추후 추가 필요)
+    path: item.path,
+  }));
 
   const totalPages = data.totalPages;
 
@@ -51,6 +51,10 @@ const ReportPage = () => {
     newParams.set("page", page.toString());
     setSearchParams(newParams);
   };
+
+  const tableColumns = getReportTableColumns({
+    onShowDetail: () => {},
+  });
 
   return (
     <Layout>
@@ -61,7 +65,7 @@ const ReportPage = () => {
       />
       <Table
         data={tableData}
-        columns={COLUMNS}
+        columns={tableColumns}
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={handlePageChange}

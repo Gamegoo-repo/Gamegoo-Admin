@@ -1,11 +1,12 @@
+import { ReactNode } from "react";
+
 export interface TableData {
-  id: number;
-  state: string;
-  name: string;
-  reason: string;
-  details: string;
-  reporter: string;
-  date: string;
-  count: number;
-  page: string;
+  [key: string]: any;
+}
+
+export interface TableColumn {
+  key: string;
+  header: string;
+  render?: (value: any, row: TableData, index: number) => ReactNode;
+  width?: string;
 }

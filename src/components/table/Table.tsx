@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-import { TableData } from "../../types/table/table";
-import Pagination from "../common/Pagination";
+import { Pagination } from "@/components/common";
+import { TableColumn, TableData } from "@/types/table/table";
+
 import { TableHeader } from "./TableHeader";
 import { TableRow } from "./TableRow";
 
 interface TableProps {
   data?: TableData[];
-  columns: string[];
+  columns: TableColumn[];
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
@@ -54,6 +55,7 @@ const Table: React.FC<TableProps> = ({
             <TableRow
               key={index}
               row={row}
+              columns={columns}
               isChecked={checkedItems[index]}
               onCheck={() => handleCheck(index)}
             />
