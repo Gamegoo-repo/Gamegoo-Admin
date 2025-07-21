@@ -107,14 +107,14 @@ const PositionBox = (props: PositionBoxProps) => {
     <PositionWrapper>
       <Positions>
         {/* 주 포지션 + 부 포지션 */}
-        <PosiWrap $status={status}>
+        <PositionWrap $status={status}>
           {POSITIONS.slice(0, 2).map((position, index) => {
             const type = index === 0 ? "main" : "sub";
 
             return (
-              <Posi key={index} $isWantP={false}>
+              <Position key={index} $isWantP={false}>
                 {position.label}
-                <PosiItem>
+                <PositionItem>
                   <Icon
                     backgroundUrl={getPositionImg(
                       type === "main"
@@ -134,19 +134,19 @@ const PositionBox = (props: PositionBoxProps) => {
                       onSelect={(val) => handleCategoryButtonClick(val, type)}
                     />
                   )}
-                </PosiItem>
-              </Posi>
+                </PositionItem>
+              </Position>
             );
           })}
-        </PosiWrap>
+        </PositionWrap>
 
         {/* 내가 찾는 포지션 */}
-        <PosiWrap $status={status}>
-          <Posi key={2} $isWantP={true}>
+        <PositionWrap $status={status}>
+          <Position key={2} $isWantP={true}>
             {POSITIONS[2].label}
-            <PosiRow>
+            <PositionRow>
               {positionValue?.want?.map((posi, index) => (
-                <PosiItem key={index}>
+                <PositionItem key={index}>
                   {posi ? (
                     <Icon
                       backgroundUrl={getPositionImg(posi)}
@@ -180,11 +180,11 @@ const PositionBox = (props: PositionBoxProps) => {
                       }
                     />
                   )}
-                </PosiItem>
+                </PositionItem>
               ))}
-            </PosiRow>
-          </Posi>
-        </PosiWrap>
+            </PositionRow>
+          </Position>
+        </PositionWrap>
       </Positions>
     </PositionWrapper>
   );
@@ -207,7 +207,7 @@ const Positions = styled.div`
   gap: 8px;
 `;
 
-const PosiWrap = styled.div<{ $status: Status | undefined }>`
+const PositionWrap = styled.div<{ $status: Status | undefined }>`
   height: ${({ $status }) => ($status === "matching" ? "116px" : "98px")};
   display: flex;
   justify-content: center;
@@ -226,7 +226,7 @@ const PosiWrap = styled.div<{ $status: Status | undefined }>`
   }
 `;
 
-const Posi = styled.div<{ $isWantP: boolean }>`
+const Position = styled.div<{ $isWantP: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -244,7 +244,7 @@ const Posi = styled.div<{ $isWantP: boolean }>`
   }
 `;
 
-const PosiRow = styled.div`
+const PositionRow = styled.div`
   height: 48px;
   display: flex;
   flex-direction: row;
@@ -253,7 +253,7 @@ const PosiRow = styled.div`
   gap: 16px;
 `;
 
-const PosiItem = styled.div`
+const PositionItem = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;

@@ -12,7 +12,6 @@ type PositionType = "main" | "sub" | "want";
 interface PositionComponentProps {
   selectedBox?: PositionType | null;
   value?: MainPEnum | null;
-  // onSelect: (selectedValues: Position | (Position | null)[]) => void;
   onSelect: (selectedValue: MainPEnum | null) => void;
   onClose: () => void;
   usedPositions?: MainPEnum[] | null;

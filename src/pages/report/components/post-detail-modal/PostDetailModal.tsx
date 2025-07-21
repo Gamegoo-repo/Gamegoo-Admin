@@ -50,8 +50,6 @@ const PostDetailModal = ({
     },
   });
 
-  if (!isOpen || !data) return null;
-
   const handleDeletePost = () => {
     deletePost();
   };
@@ -59,6 +57,10 @@ const PostDetailModal = ({
   const modalRoot = document.getElementById("modal-root") as HTMLElement;
   if (!modalRoot) {
     console.warn("modal-root element not found");
+    return null;
+  }
+
+  if (!isOpen || !data) {
     return null;
   }
 
@@ -110,7 +112,7 @@ const PostDetailModal = ({
                   tierFontSize={theme.fonts.bold20}
                 />
               </UserTierWrapper>
-              {data.gameMode !== "ARAM" && (
+              {data.gameMode !== GameModeEnum.ARAM && (
                 <PositionSection>
                   <Title>포지션</Title>
                   <PositionBox
