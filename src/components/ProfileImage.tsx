@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import useMediaQueryContext from "@/hooks/useMediaQueryContext";
+import { useMediaQueryContext } from "@/hooks/useMediaQueryContext";
 import { theme } from "@/styles/theme";
 import { getCustomProfileImg, getProfileBgColor } from "@/utils";
 
@@ -8,7 +8,7 @@ interface ProfileImageProps {
   image: number;
 }
 
-const ProfileImage = (props: ProfileImageProps) => {
+const ProfileImage: React.FC<ProfileImageProps> = (props) => {
   const { image } = props;
   const { isMobile } = useMediaQueryContext();
 

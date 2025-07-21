@@ -2,7 +2,7 @@ import { useContext } from "react";
 
 import { MediaQueryContext } from "@/providers/MediaQueryContext";
 
-const useMediaQueryContext = () => {
+export const useMediaQueryContext = () => {
   const context = useContext(MediaQueryContext);
   if (!context) {
     throw new Error(
@@ -11,5 +11,3 @@ const useMediaQueryContext = () => {
   }
   return context;
 };
-
-export default useMediaQueryContext;

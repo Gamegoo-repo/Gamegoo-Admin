@@ -1,3 +1,30 @@
+export function checkTierAbbr(tier: string) {
+  switch (tier) {
+    case "IRON":
+      return "I";
+    case "BRONZE":
+      return "B";
+    case "SILVER":
+      return "S";
+    case "GOLD":
+      return "G";
+    case "PLATINUM":
+      return "P";
+    case "EMERALD":
+      return "E";
+    case "DIAMOND":
+      return "D";
+    case "MASTER":
+      return "M";
+    case "GRANDMASTER":
+      return "GM";
+    case "CHALLENGER":
+      return "C";
+    default:
+      return "UR";
+  }
+}
+
 export const getProfileBgColor = (id: number) => {
   const colors = [
     "#DFDEFF",
