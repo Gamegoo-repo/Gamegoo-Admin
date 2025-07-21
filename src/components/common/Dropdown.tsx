@@ -11,7 +11,7 @@ type DropdownProps = {
   onSelect?: (option: DropdownOption) => void;
 };
 
-const Dropdown: React.FC<DropdownProps> = ({ label, options }) => {
+const Dropdown: React.FC<DropdownProps> = ({ label, options, onSelect }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState(label);
   const ref = useRef<HTMLDivElement>(null);
@@ -19,6 +19,12 @@ const Dropdown: React.FC<DropdownProps> = ({ label, options }) => {
   const toggleDropdown = () => setIsOpen(!isOpen);
 
   const handleSelect = (option: DropdownOption) => {
+    if (onSelect) {
+      onSelect(option);
+      setIsOpen(false);
+      return;
+    }
+
     setSelected(option.label);
     setIsOpen(false);
   };

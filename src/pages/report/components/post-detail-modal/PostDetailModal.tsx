@@ -45,7 +45,7 @@ const PostDetailModal = ({
       return AuthAxios.delete(`/api/v2/report/${reportId}/post`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["post"] });
+      queryClient.invalidateQueries({ queryKey: ["report"] });
       onClose();
     },
   });

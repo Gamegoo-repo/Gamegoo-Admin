@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import styled from "styled-components";
@@ -19,6 +19,7 @@ const ReportPage = () => {
   const [selectedReportId, setSelectedReportId] = useState<
     number | undefined
   >();
+  const [checkedItems, setCheckedItems] = useState<boolean[]>([]);
 
   const currentPage = Number(searchParams.get("page")) || 1;
 
@@ -53,14 +54,30 @@ const ReportPage = () => {
 
   const totalPages = data.totalPages;
 
+  // 데이터가 변경되면 체크 상태 초기화
+  useEffect(() => {
+    setCheckedItems(new Array(tableData.length).fill(false));
+  }, [tableData.length]);
+
   const handlePageChange = (page: number) => {
     const newParams = new URLSearchParams(searchParams);
     newParams.set("page", page.toString());
     setSearchParams(newParams);
   };
 
+  const handleSelectAll = () => {
+    const allSelected = checkedItems.every(Boolean) && checkedItems.length > 0;
+    setCheckedItems(new Array(tableData.length).fill(!allSelected));
+  };
+
+  const handleCheck = (index: number) => {
+    const updated = [...checkedItems];
+    updated[index] = !updated[index];
+    setCheckedItems(updated);
+  };
+
   const handleShowPostDetail = (reportId: number) => {
-    // TODO: postId 수정 필요
+    // reportId를 postId로 사용 (실제로는 row에서 boardId나 postId를 가져와야 할 수도 있음)
     setSelectedPostId(reportId);
     setSelectedReportId(reportId);
     setIsModalOpen(true);
@@ -69,6 +86,14 @@ const ReportPage = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedPostId(undefined);
+    setSelectedReportId(undefined);
+  };
+
+  // 체크된 아이템들의 reportId 가져오기
+  const getCheckedReportIds = (): number[] => {
+    return tableData
+      .filter((_: any, index: number) => checkedItems[index])
+      .map((item: any) => item.reportId);
   };
 
   const tableColumns = getReportTableColumns({
@@ -82,13 +107,17 @@ const ReportPage = () => {
         <TopFilterContainer
           searchParams={searchParams}
           setSearchParams={setSearchParams}
+          checkedReportIds={getCheckedReportIds()}
         />
         <Table
           data={tableData}
           columns={tableColumns}
           currentPage={currentPage}
           totalPages={totalPages}
+          checkedItems={checkedItems}
           onPageChange={handlePageChange}
+          onSelectAll={handleSelectAll}
+          onCheck={handleCheck}
         />
         <Label variant="purple" label="3일 정지" />
         <Label variant="green" label="정상" />

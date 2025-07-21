@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 
 import { Pagination } from "@/components/common";
@@ -12,7 +12,10 @@ interface TableProps {
   columns: TableColumn[];
   currentPage: number;
   totalPages: number;
+  checkedItems: boolean[];
   onPageChange: (page: number) => void;
+  onSelectAll: () => void;
+  onCheck: (index: number) => void;
 }
 
 const Table: React.FC<TableProps> = ({
@@ -20,23 +23,12 @@ const Table: React.FC<TableProps> = ({
   columns,
   currentPage,
   totalPages,
+  checkedItems,
   onPageChange,
+  onSelectAll,
+  onCheck,
 }) => {
-  const [checkedItems, setCheckedItems] = useState<boolean[]>(
-    new Array(data.length).fill(false)
-  );
-
-  const allSelected = checkedItems.every(Boolean);
-
-  const handleSelectAll = () => {
-    setCheckedItems(new Array(data.length).fill(!allSelected));
-  };
-
-  const handleCheck = (index: number) => {
-    const updated = [...checkedItems];
-    updated[index] = !updated[index];
-    setCheckedItems(updated);
-  };
+  const allSelected = checkedItems.every(Boolean) && checkedItems.length > 0;
 
   if (!data) {
     return null;
@@ -48,7 +40,7 @@ const Table: React.FC<TableProps> = ({
         <TableHeader
           columns={columns}
           allSelected={allSelected}
-          onSelectAll={handleSelectAll}
+          onSelectAll={onSelectAll}
         />
         <tbody>
           {data.map((row, index) => (
@@ -56,8 +48,8 @@ const Table: React.FC<TableProps> = ({
               key={index}
               row={row}
               columns={columns}
-              isChecked={checkedItems[index]}
-              onCheck={() => handleCheck(index)}
+              isChecked={checkedItems[index] || false}
+              onCheck={() => onCheck(index)}
             />
           ))}
         </tbody>
