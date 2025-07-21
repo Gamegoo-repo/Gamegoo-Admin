@@ -8,7 +8,7 @@ import { Label, Title } from "@/components/common";
 import Table from "@/components/table/Table";
 
 import { TopFilterContainer } from "./components";
-import PostDetailModal from "./components/PostDetailModal";
+import PostDetailModal from "./components/post-detail-modal/PostDetailModal";
 import { getReportTableColumns } from "./constants";
 import { getFilterParams } from "./utils";
 

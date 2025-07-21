@@ -218,6 +218,18 @@ const zIndex = {
   alertConfirm: 1000,
 };
 
+const ICON = () => {
+  return `
+  background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    `;
+};
+
+const icon = {
+  backgroundSetting: ICON(),
+};
+
 export type ColorsTypes = typeof colors;
 export type FontsTypes = typeof fonts;
 
@@ -226,4 +238,5 @@ export const theme: DefaultTheme = {
   fonts,
   breakpoints,
   zIndex,
+  icon,
 };
