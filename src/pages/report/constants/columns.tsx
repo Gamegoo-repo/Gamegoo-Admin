@@ -1,13 +1,6 @@
-import { Button, Label } from "@/components/common";
 import { TableColumn } from "@/types/table/table";
 
-interface ColumnCallbacks {
-  onShowDetail?: (targetMember: string, reportData: any) => void;
-}
-
-export const getReportTableColumns = (
-  callbacks: ColumnCallbacks = {}
-): TableColumn[] => [
+export const getReportTableColumns = (): TableColumn[] => [
   {
     key: "reportId",
     header: "번호",
@@ -17,10 +10,6 @@ export const getReportTableColumns = (
     key: "state",
     header: "계정 상태",
     width: "120px",
-    render: (value) => {
-      if (!value) return "-";
-      return <Label variant="purple" label={String(value)} />;
-    },
   },
   {
     key: "targetMember",
@@ -31,7 +20,6 @@ export const getReportTableColumns = (
     key: "reportType",
     header: "신고 사유",
     width: "120px",
-    render: (value) => <Label variant="gray" label={String(value)} />,
   },
   {
     key: "content",
@@ -52,28 +40,23 @@ export const getReportTableColumns = (
     key: "reportCount",
     header: "누적 횟수",
     width: "100px",
-    render: (value, row) => {
-      const handleShowDetail = () => {
-        if (callbacks.onShowDetail) {
-          callbacks.onShowDetail(row.targetMember, row);
-        }
-      };
-
-      return (
-        <Button
-          variant="secondary"
-          label={value ? String(value) : "0"}
-          width="60px"
-          height="32px"
-          fontSize="12px"
-          onClick={handleShowDetail}
-        />
-      );
-    },
   },
   {
     key: "path",
     header: "페이지",
     width: "120px",
+    render: (value) => {
+      if (value === "BOARD") {
+        return (
+          <p style={{ color: "red", margin: 0 }}>
+            <span style={{ textDecoration: "underline" }}>게시판</span> x
+          </p>
+        );
+      }
+      if (value === "PROFILE") {
+        return "프로필";
+      }
+      return null;
+    },
   },
 ];

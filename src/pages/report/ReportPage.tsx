@@ -52,9 +52,7 @@ const ReportPage = () => {
     setSearchParams(newParams);
   };
 
-  const tableColumns = getReportTableColumns({
-    onShowDetail: () => {},
-  });
+  const tableColumns = getReportTableColumns();
 
   return (
     <Layout>
