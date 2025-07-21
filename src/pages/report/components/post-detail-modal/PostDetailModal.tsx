@@ -11,7 +11,9 @@ import UserAccount from "@/pages/report/components/post-detail-modal/UserAccount
 import { theme } from "@/styles/theme";
 
 import Champion from "./Champion";
+import GameStyle from "./GameStyle";
 import PositionBox from "./PositionBox";
+import QueueType from "./QueueType";
 
 interface PostDetailModalProps {
   isOpen: boolean;
@@ -100,6 +102,7 @@ const PostDetailModal = ({ isOpen, postId, onClose }: PostDetailModalProps) => {
                 </PositionSection>
               )}
               <ChampionNQueueSection>
+                <QueueType value={data.gameMode} />
                 <Champion
                   title={true}
                   font="semiBold14"
@@ -111,6 +114,7 @@ const PostDetailModal = ({ isOpen, postId, onClose }: PostDetailModalProps) => {
               ></WinningRateSection>
               <StyleSection $gameType={data.gameMode}>
                 <Title>게임 스타일</Title>
+                <GameStyle styles={data.gameStyles} />
               </StyleSection>
               <MemoSection $gameType={data.gameMode}>
                 <Title>한마디</Title>

@@ -1,4 +1,4 @@
-import { MainPEnum } from "@/@generated/types";
+import { GameModeEnum, MainPEnum } from "@/@generated/types";
 
 export function checkTierAbbr(tier: string) {
   switch (tier) {
@@ -80,5 +80,20 @@ export function getPositionImg(position: MainPEnum) {
       return "/assets/images/position/position_supporter.svg";
     default:
       return "/assets/images/position/position_all.svg";
+  }
+}
+
+export function getQueueType(gameMode: GameModeEnum) {
+  switch (gameMode) {
+    case GameModeEnum.FAST:
+      return "빠른대전";
+    case GameModeEnum.SOLO:
+      return "솔로랭크";
+    case GameModeEnum.FREE:
+      return "자유랭크";
+    case GameModeEnum.ARAM:
+      return "칼바람 나락";
+    default:
+      return "빠른대전";
   }
 }
