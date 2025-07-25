@@ -1,17 +1,21 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 
-import { TableData } from "../../types/table/table";
-import Pagination from "../common/Pagination";
+import { Pagination } from "@/components/common";
+import { TableColumn, TableData } from "@/types/table/table";
+
 import { TableHeader } from "./TableHeader";
 import { TableRow } from "./TableRow";
 
 interface TableProps {
   data?: TableData[];
-  columns: string[];
+  columns: TableColumn[];
   currentPage: number;
   totalPages: number;
+  checkedItems: boolean[];
   onPageChange: (page: number) => void;
+  onSelectAll: () => void;
+  onCheck: (index: number) => void;
 }
 
 const Table: React.FC<TableProps> = ({
@@ -19,23 +23,12 @@ const Table: React.FC<TableProps> = ({
   columns,
   currentPage,
   totalPages,
+  checkedItems,
   onPageChange,
+  onSelectAll,
+  onCheck,
 }) => {
-  const [checkedItems, setCheckedItems] = useState<boolean[]>(
-    new Array(data.length).fill(false)
-  );
-
-  const allSelected = checkedItems.every(Boolean);
-
-  const handleSelectAll = () => {
-    setCheckedItems(new Array(data.length).fill(!allSelected));
-  };
-
-  const handleCheck = (index: number) => {
-    const updated = [...checkedItems];
-    updated[index] = !updated[index];
-    setCheckedItems(updated);
-  };
+  const allSelected = checkedItems.every(Boolean) && checkedItems.length > 0;
 
   if (!data) {
     return null;
@@ -47,15 +40,16 @@ const Table: React.FC<TableProps> = ({
         <TableHeader
           columns={columns}
           allSelected={allSelected}
-          onSelectAll={handleSelectAll}
+          onSelectAll={onSelectAll}
         />
         <tbody>
           {data.map((row, index) => (
             <TableRow
               key={index}
               row={row}
-              isChecked={checkedItems[index]}
-              onCheck={() => handleCheck(index)}
+              columns={columns}
+              isChecked={checkedItems[index] || false}
+              onCheck={() => onCheck(index)}
             />
           ))}
         </tbody>

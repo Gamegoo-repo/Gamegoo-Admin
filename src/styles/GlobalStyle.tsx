@@ -25,20 +25,6 @@ const GlobalStyle = createGlobalStyle`
         overflow: hidden;
       }
 
-      &::-webkit-scrollbar {
-        width: 24px;
-        height: 100px;
-      }
-      &::-webkit-scrollbar-thumb {
-            border-radius: 26px;
-        background: ${theme.colors.gray500};
-        background-clip: padding-box;
-        border: 8px solid transparent;
-      }
-      &::-webkit-scrollbar-track {
-        background: transparent;
-      }
-
       a {
         color: inherit;
         text-decoration: none;

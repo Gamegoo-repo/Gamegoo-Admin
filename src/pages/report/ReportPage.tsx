@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import styled from "styled-components";
@@ -7,11 +8,18 @@ import { Label, Title } from "@/components/common";
 import Table from "@/components/table/Table";
 
 import { TopFilterContainer } from "./components";
-import { COLUMNS } from "./constants";
+import PostDetailModal from "./components/post-detail-modal/PostDetailModal";
+import { getReportTableColumns } from "./constants";
 import { getFilterParams } from "./utils";
 
 const ReportPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPostId, setSelectedPostId] = useState<number | undefined>();
+  const [selectedReportId, setSelectedReportId] = useState<
+    number | undefined
+  >();
+  const [checkedItems, setCheckedItems] = useState<boolean[]>([]);
 
   const currentPage = Number(searchParams.get("page")) || 1;
 
@@ -25,26 +33,31 @@ const ReportPage = () => {
     },
   });
 
-  const tableData = data.reports.map((item: any) => [
-    item.reportId, // 신고 번호
-    "", // TODO: 계정 상태 (추후 추가 필요)
-    `${item.toMemberName}#${item.toMemberTag}`, // 비매너 소환사명
-    item.reportType, // 신고 사유
-    item.content, // 상세 내용
-    `${item.fromMemberName}#${item.fromMemberTag}`, // 신고자
-    new Date(item.createdAt).toLocaleString("ko-KR", {
+  const tableData = data.reports.map((item: any) => ({
+    reportId: item.reportId,
+    state: "", // TODO: 계정 상태 (추후 추가 필요)
+    targetMember: `${item.toMemberName}#${item.toMemberTag}`,
+    reportType: item.reportType,
+    content: item.content,
+    reporter: `${item.fromMemberName}#${item.fromMemberTag}`,
+    createdAt: new Date(item.createdAt).toLocaleString("ko-KR", {
       year: "numeric",
       month: "numeric",
       day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
       hour12: false,
-    }), // 접수 일시
-    "", // TODO: 누적 횟수 (추후 추가 필요)
-    item.path, // 신고 경로
-  ]);
+    }),
+    reportCount: "", // TODO: 누적 횟수 (추후 추가 필요)
+    path: item.path,
+  }));
 
   const totalPages = data.totalPages;
+
+  // 데이터가 변경되면 체크 상태 초기화
+  useEffect(() => {
+    setCheckedItems(new Array(tableData.length).fill(false));
+  }, [tableData.length]);
 
   const handlePageChange = (page: number) => {
     const newParams = new URLSearchParams(searchParams);
@@ -52,25 +65,72 @@ const ReportPage = () => {
     setSearchParams(newParams);
   };
 
+  const handleSelectAll = () => {
+    const allSelected = checkedItems.every(Boolean) && checkedItems.length > 0;
+    setCheckedItems(new Array(tableData.length).fill(!allSelected));
+  };
+
+  const handleCheck = (index: number) => {
+    const updated = [...checkedItems];
+    updated[index] = !updated[index];
+    setCheckedItems(updated);
+  };
+
+  const handleShowPostDetail = (reportId: number) => {
+    // reportId를 postId로 사용 (실제로는 row에서 boardId나 postId를 가져와야 할 수도 있음)
+    setSelectedPostId(reportId);
+    setSelectedReportId(reportId);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedPostId(undefined);
+    setSelectedReportId(undefined);
+  };
+
+  // 체크된 아이템들의 reportId 가져오기
+  const getCheckedReportIds = (): number[] => {
+    return tableData
+      .filter((_: any, index: number) => checkedItems[index])
+      .map((item: any) => item.reportId);
+  };
+
+  const tableColumns = getReportTableColumns({
+    onShowPostDetail: handleShowPostDetail,
+  });
+
   return (
-    <Layout>
-      <Title title="신고 유저 목록" />
-      <TopFilterContainer
-        searchParams={searchParams}
-        setSearchParams={setSearchParams}
+    <>
+      <Layout>
+        <Title title="신고 유저 목록" />
+        <TopFilterContainer
+          searchParams={searchParams}
+          setSearchParams={setSearchParams}
+          checkedReportIds={getCheckedReportIds()}
+        />
+        <Table
+          data={tableData}
+          columns={tableColumns}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          checkedItems={checkedItems}
+          onPageChange={handlePageChange}
+          onSelectAll={handleSelectAll}
+          onCheck={handleCheck}
+        />
+        <Label variant="purple" label="3일 정지" />
+        <Label variant="green" label="정상" />
+        <Label variant="red" label="영구 정지" />
+        <Label variant="gray" label="스팸 홍보 / 도매글" />
+      </Layout>
+      <PostDetailModal
+        isOpen={isModalOpen}
+        reportId={selectedReportId}
+        postId={selectedPostId}
+        onClose={handleCloseModal}
       />
-      <Table
-        data={tableData}
-        columns={COLUMNS}
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-      />
-      <Label variant="purple" label="3일 정지" />
-      <Label variant="green" label="정상" />
-      <Label variant="red" label="영구 정지" />
-      <Label variant="gray" label="스팸 홍보 / 도매글" />
-    </Layout>
+    </>
   );
 };
 

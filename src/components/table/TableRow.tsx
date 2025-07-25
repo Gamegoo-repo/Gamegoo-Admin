@@ -1,16 +1,17 @@
 import styled from "styled-components";
 
-import { theme } from "../../styles/theme";
-import { TableData } from "../../types/table/table";
-import Checkbox from "../common/Checkbox";
-import Label from "../common/Label";
+import { Checkbox, Label } from "@/components/common";
+import { theme } from "@/styles/theme";
+import { TableColumn, TableData } from "@/types/table/table";
 
 export const TableRow = ({
   row,
+  columns,
   isChecked,
   onCheck,
 }: {
   row: TableData;
+  columns: TableColumn[];
   isChecked: boolean;
   onCheck: () => void;
 }) => {
@@ -19,24 +20,47 @@ export const TableRow = ({
       <Td selected={isChecked}>
         <Checkbox checked={isChecked} onChange={onCheck} />
       </Td>
-      {Object.entries(row).map(([key, value], index) => {
-        if (key === "state") {
+      {columns.map((column, index) => {
+        const value = row[column.key];
+
+        if (column.render) {
           return (
-            <Td key={index} selected={isChecked}>
+            <Td
+              key={index}
+              selected={isChecked}
+              style={{ width: column.width }}
+            >
+              {column.render(value, row, index)}
+            </Td>
+          );
+        }
+
+        // Default rendering for backward compatibility
+        if (column.key === "state") {
+          return (
+            <Td
+              key={index}
+              selected={isChecked}
+              style={{ width: column.width }}
+            >
               <Label variant="purple" label={String(value)} />
             </Td>
           );
         }
-        if (key === "reason") {
+        if (column.key === "reason") {
           return (
-            <Td key={index} selected={isChecked}>
+            <Td
+              key={index}
+              selected={isChecked}
+              style={{ width: column.width }}
+            >
               <Label variant="gray" label={String(value)} />
             </Td>
           );
         }
 
         return (
-          <Td key={index} selected={isChecked}>
+          <Td key={index} selected={isChecked} style={{ width: column.width }}>
             {value}
           </Td>
         );

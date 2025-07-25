@@ -1,11 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 
-import { theme } from "../../styles/theme";
-import Checkbox from "../common/Checkbox";
+import { Checkbox } from "@/components/common";
+import { theme } from "@/styles/theme";
+import { TableColumn } from "@/types/table/table";
 
 interface TableHeaderProps {
-  columns: string[];
+  columns: TableColumn[];
   allSelected: boolean;
   onSelectAll: () => void;
 }
@@ -22,7 +23,9 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
           <Checkbox checked={allSelected} onChange={onSelectAll} />
         </th>
         {columns.map((column, index) => (
-          <th key={index}>{column}</th>
+          <th key={index} style={{ width: column.width }}>
+            {column.header}
+          </th>
         ))}
       </tr>
     </THead>
