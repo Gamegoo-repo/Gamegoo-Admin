@@ -4,7 +4,7 @@ import AuthLayout from "../layouts/AuthLayout";
 import MainLayout from "../layouts/MainLayout";
 import LoginPage from "../pages/LoginPage";
 import MainPage from "../pages/MainPage";
-import ReportPage from "../pages/ReportPage";
+import ReportPage from "../pages/report/ReportPage";
 
 const router = createBrowserRouter([
   {

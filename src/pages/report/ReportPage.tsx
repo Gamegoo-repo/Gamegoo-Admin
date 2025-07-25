@@ -1,0 +1,88 @@
+import { useSearchParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import styled from "styled-components";
+
+import { AuthAxios } from "@/api";
+import { Label, Title } from "@/components/common";
+import Table from "@/components/table/Table";
+
+import { TopFilterContainer } from "./components";
+import { COLUMNS } from "./constants";
+import { getFilterParams } from "./utils";
+
+const ReportPage = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const currentPage = Number(searchParams.get("page")) || 1;
+
+  const { data = { reports: [], totalPages: 0 } } = useQuery({
+    queryKey: ["report", searchParams.toString()],
+    queryFn: async () => {
+      const params = getFilterParams(searchParams);
+      const response = await AuthAxios.get("/api/v2/report/list", { params });
+
+      return response.data.data;
+    },
+  });
+
+  const tableData = data.reports.map((item: any) => [
+    item.reportId, // 신고 번호
+    "", // TODO: 계정 상태 (추후 추가 필요)
+    `${item.toMemberName}#${item.toMemberTag}`, // 비매너 소환사명
+    item.reportType, // 신고 사유
+    item.content, // 상세 내용
+    `${item.fromMemberName}#${item.fromMemberTag}`, // 신고자
+    new Date(item.createdAt).toLocaleString("ko-KR", {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    }), // 접수 일시
+    "", // TODO: 누적 횟수 (추후 추가 필요)
+    item.path, // 신고 경로
+  ]);
+
+  const totalPages = data.totalPages;
+
+  const handlePageChange = (page: number) => {
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set("page", page.toString());
+    setSearchParams(newParams);
+  };
+
+  return (
+    <Layout>
+      <Title title="신고 유저 목록" />
+      <TopFilterContainer
+        searchParams={searchParams}
+        setSearchParams={setSearchParams}
+      />
+      <Table
+        data={tableData}
+        columns={COLUMNS}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
+      <Label variant="purple" label="3일 정지" />
+      <Label variant="green" label="정상" />
+      <Label variant="red" label="영구 정지" />
+      <Label variant="gray" label="스팸 홍보 / 도매글" />
+    </Layout>
+  );
+};
+
+export default ReportPage;
+
+const Layout = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 0 20px;
+  gap: 24px;
+  overflow-y: auto;
+`;

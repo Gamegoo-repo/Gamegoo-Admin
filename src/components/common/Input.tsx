@@ -10,6 +10,7 @@ import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 
 interface Option {
+  id: number;
   label: string;
   value: string;
 }
@@ -101,7 +102,7 @@ const Input = (props: InputProps) => {
             disabled={disabled}
           >
             {options.map((option) => (
-              <option key={option.value} value={option.value}>
+              <option key={option.id} value={option.value}>
                 {option.label}
               </option>
             ))}

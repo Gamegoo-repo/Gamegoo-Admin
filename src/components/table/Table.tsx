@@ -7,7 +7,7 @@ import { TableHeader } from "./TableHeader";
 import { TableRow } from "./TableRow";
 
 interface TableProps {
-  data: TableData[];
+  data?: TableData[];
   columns: string[];
   currentPage: number;
   totalPages: number;
@@ -15,7 +15,7 @@ interface TableProps {
 }
 
 const Table: React.FC<TableProps> = ({
-  data,
+  data = [],
   columns,
   currentPage,
   totalPages,
@@ -36,6 +36,10 @@ const Table: React.FC<TableProps> = ({
     updated[index] = !updated[index];
     setCheckedItems(updated);
   };
+
+  if (!data) {
+    return null;
+  }
 
   return (
     <TableContainer>
