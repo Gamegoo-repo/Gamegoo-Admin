@@ -8,22 +8,23 @@ import LoginCheckbox from "../components/login/LoginCheckbox";
 import LoginInput from "../components/login/LoginInput";
 import { STORAGE_KEY } from "../constants/storage";
 import { theme } from "../styles/theme";
-import { emailRegEx } from "../utils/regEx";
+
+// import { emailRegEx } from "../utils/regEx";
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const [emailValid, setEmailValid] = useState<boolean | undefined>(undefined);
+  // const [emailValid, setEmailValid] = useState<boolean | undefined>(undefined);
   const [passwordValid, setPasswordValid] = useState<boolean | undefined>(
     undefined
   );
   const [autoLogin, setAutoLogin] = useState(false);
 
-  const validateEmail = (email: string) => {
-    setEmailValid(emailRegEx.test(email));
-  };
+  // const validateEmail = (email: string) => {
+  //   setEmailValid(emailRegEx.test(email));
+  // };
 
   const validatePassword = (password: string) => {
     if (password.length === 0) {
@@ -35,7 +36,7 @@ const LoginPage = () => {
 
   useEffect(() => {
     if (email.length !== 0) {
-      validateEmail(email);
+      // validateEmail(email);
     } else if (password.length !== 0) {
       validatePassword(password);
     }
@@ -66,14 +67,14 @@ const LoginPage = () => {
       if (error.response) {
         if (data.code === "MEMBER_401") {
           // 이메일이 DB에 없을 경우
-          setEmailValid(false);
+          // setEmailValid(false);
           setPasswordValid(false);
         } else if (data.code === "MEMBER_404") {
           // 비밀번호가 틀렸을 경우
           setPasswordValid(false);
         } else {
           // 기타 에러 처리
-          setEmailValid(false);
+          // setEmailValid(false);
           setPasswordValid(false);
         }
       }
