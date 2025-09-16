@@ -100,11 +100,11 @@ const LoginPage = () => {
                 value={email}
                 onChange={(value) => {
                   setEmail(value);
-                  validateEmail(value);
+                  // validateEmail(value);
                 }}
                 errorMsg="정보 불일치"
                 placeholder="이메일 주소"
-                isvalid={emailValid}
+                // isvalid={emailValid}
               />
               <LoginInput
                 inputType="password"
@@ -125,7 +125,7 @@ const LoginPage = () => {
               variant="primary"
               label="이메일로 시작하기"
               onClick={handleLogin}
-              disabled={!email || !password || !emailValid || !passwordValid}
+              disabled={!email || !password}
               height="58px"
               borderRadius="15px"
             />
