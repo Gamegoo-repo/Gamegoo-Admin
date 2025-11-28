@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
+import { AuthAxios } from "../api";
 import { postLogin } from "../api/login";
 import Button from "../components/common/Button";
 import LoginCheckbox from "../components/login/LoginCheckbox";
@@ -13,71 +14,35 @@ import { theme } from "../styles/theme";
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [memberId, setMemberId] = useState("");
 
-  // const [emailValid, setEmailValid] = useState<boolean | undefined>(undefined);
-  const [passwordValid, setPasswordValid] = useState<boolean | undefined>(
-    undefined
-  );
   const [autoLogin, setAutoLogin] = useState(false);
 
-  // const validateEmail = (email: string) => {
-  //   setEmailValid(emailRegEx.test(email));
-  // };
-
-  const validatePassword = (password: string) => {
-    if (password.length === 0) {
-      setPasswordValid(undefined);
-    } else {
-      setPasswordValid(true);
-    }
-  };
-
   useEffect(() => {
-    if (email.length !== 0) {
+    if (memberId.length !== 0) {
       // validateEmail(email);
-    } else if (password.length !== 0) {
-      validatePassword(password);
     }
-  }, [email, password]);
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      handleLogin();
-    }
-  };
+  }, [memberId]);
 
   /* 로그인 */
   const handleLogin = async () => {
     try {
-      const response = await postLogin({ email, password });
-      const accessToken = response.data.accessToken;
-      const refreshToken = response.data.refreshToken;
+      const response = await postLogin({ memberId });
+      const rawToken = response;
+      const accessToken =
+        typeof rawToken === "string"
+          ? rawToken.replace(/^Bearer\s+/i, "")
+          : String(rawToken);
 
       /* 자동 로그인 체크 여부에 따라 토큰 저장 위치 결정 */
       const storage = autoLogin ? localStorage : sessionStorage;
-      storage.setItem(STORAGE_KEY.accessToken, accessToken);
-      storage.setItem(STORAGE_KEY.refreshToken, refreshToken);
-      storage.setItem(STORAGE_KEY.name, response.data.name);
-      storage.setItem(STORAGE_KEY.userId, response.data.id.toString());
+      storage.setItem(STORAGE_KEY.accessToken, accessToken.toString());
+      /* 로그인 직후 즉시 Authorization 헤더 적용 */
+      AuthAxios.defaults.headers.common["Authorization"] =
+        `Bearer ${accessToken}`;
       navigate("/");
     } catch (error: any) {
-      const data = error.response.data;
-      if (error.response) {
-        if (data.code === "MEMBER_401") {
-          // 이메일이 DB에 없을 경우
-          // setEmailValid(false);
-          setPasswordValid(false);
-        } else if (data.code === "MEMBER_404") {
-          // 비밀번호가 틀렸을 경우
-          setPasswordValid(false);
-        } else {
-          // 기타 에러 처리
-          // setEmailValid(false);
-          setPasswordValid(false);
-        }
-      }
+      console.error("로그인 실패:", error);
     }
   };
 
@@ -98,35 +63,21 @@ const LoginPage = () => {
             <InputBox>
               <LoginInput
                 inputType="input"
-                value={email}
+                value={memberId}
                 onChange={(value) => {
-                  setEmail(value);
+                  setMemberId(value);
                   // validateEmail(value);
                 }}
                 errorMsg="정보 불일치"
-                placeholder="이메일 주소"
+                placeholder="사용자 ID"
                 // isvalid={emailValid}
-              />
-              <LoginInput
-                inputType="password"
-                value={password}
-                onChange={(value) => {
-                  setPassword(value);
-                  validatePassword(value);
-                }}
-                errorMsg="정보 불일치"
-                placeholder="비밀번호"
-                isvalid={passwordValid}
-                height="58px"
-                borderRadius="15px"
-                onKeyDown={handleKeyDown}
               />
             </InputBox>
             <Button
               variant="primary"
-              label="이메일로 시작하기"
+              label="로그인"
               onClick={handleLogin}
-              disabled={!email || !password}
+              disabled={!memberId}
               height="58px"
               borderRadius="15px"
             />

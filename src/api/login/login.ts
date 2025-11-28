@@ -1,15 +1,18 @@
-import { LoginRequest, LoginResponse } from "../../types/api/login";
 import Axios from "../api";
 
 export const postLogin = async ({
-  email,
-  password,
-}: LoginRequest): Promise<LoginResponse> => {
-  const endpoint = "/api/v2/auth/login";
+  memberId,
+}: {
+  memberId: string;
+}): Promise<string> => {
+  const endpoint = `/api/v2/auth/token/${memberId}`;
 
   try {
-    const response = await Axios.post(endpoint, { email, password });
-    return response.data;
+    const response = await Axios.get(endpoint);
+    const data = response.data as any;
+    const token = data.data;
+
+    return token;
   } catch (error) {
     console.error("로그인 실패:", error);
     throw error;
