@@ -1,5 +1,5 @@
-import { refreshApi } from "./auth.api";
-import { getRefreshToken, saveAuth, clearAuth } from "./auth.storage";
+import { loginApi, refreshApi } from "./auth.api";
+import {initAuthStorage, getRefreshToken, saveAuth, clearAuth } from "./auth.storage";
 
 let isRefreshing = false;
 let waitQueue: Array<(token: string) => void> = [];
@@ -8,6 +8,20 @@ const resolveQueue = (token: string) => {
   waitQueue.forEach((cb) => cb(token));
   waitQueue = [];
 };
+
+export const login = async(
+    payload: {account: string, password: string},
+    autoLogin:boolean
+)=> {
+    initAuthStorage(autoLogin)
+    const res =await loginApi(payload)
+    saveAuth({
+    accessToken: res.data.data.accessToken,
+    refreshToken: res.data.data.refreshToken,
+  });
+
+  return res;
+}
 
 export const refreshAccessToken = async (): Promise<string> => {
   if (isRefreshing) {

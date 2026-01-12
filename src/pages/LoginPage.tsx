@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-import { AuthAxios } from "../api";
-import { postLogin } from "../api/login";
+
 import Button from "../components/common/Button";
 import LoginCheckbox from "../components/login/LoginCheckbox";
 import LoginInput from "../components/login/LoginInput";
-import { STORAGE_KEY } from "../constants/storage";
+
 import { theme } from "../styles/theme";
+
+import { login } from "@/api/auth/auth.service";
 
 // import { emailRegEx } from "../utils/regEx";
 
@@ -18,6 +19,10 @@ const LoginPage = () => {
 
   const [autoLogin, setAutoLogin] = useState(false);
 
+  const AdminPassword = import.meta.env.VITE_PUBLIC_ADMIN_PASSWORD as string
+
+
+
   useEffect(() => {
     if (memberId.length !== 0) {
       // validateEmail(email);
@@ -26,25 +31,17 @@ const LoginPage = () => {
 
   /* 로그인 */
   const handleLogin = async () => {
-    try {
-      const response = await postLogin({ memberId });
-      const rawToken = response;
-      const accessToken =
-        typeof rawToken === "string"
-          ? rawToken.replace(/^Bearer\s+/i, "")
-          : String(rawToken);
+  try {
+    await login(
+      { account: memberId, password: AdminPassword },
+      autoLogin
+    );
 
-      /* 자동 로그인 체크 여부에 따라 토큰 저장 위치 결정 */
-      const storage = autoLogin ? localStorage : sessionStorage;
-      storage.setItem(STORAGE_KEY.accessToken, accessToken.toString());
-      /* 로그인 직후 즉시 Authorization 헤더 적용 */
-      AuthAxios.defaults.headers.common["Authorization"] =
-        `Bearer ${accessToken}`;
-      navigate("/");
-    } catch (error: any) {
-      console.error("로그인 실패:", error);
-    }
-  };
+    navigate("/");
+  } catch (error) {
+    console.error("로그인 실패:", error);
+  }
+};
 
   return (
     <Container>

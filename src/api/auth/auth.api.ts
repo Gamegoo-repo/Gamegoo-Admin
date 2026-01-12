@@ -1,3 +1,4 @@
+import { authAxios } from "../lib/axios.auth";
 import { publicAxios } from "../lib/axios.public";
 
 
@@ -9,11 +10,14 @@ export interface LoginResponse {
 }
 
 export const loginApi = (payload: {
-  email: string;
+  account: string;
   password: string;
 }) =>
-  publicAxios.post<LoginResponse>("/auth/login", payload);
+  publicAxios.post<LoginResponse>("api/v2/auth/admin/login", payload);
 
+export const logoutApi= ()=> {
+    authAxios.post("api/v2/auth/logout")
+}
 export const refreshApi = (refreshToken: string) =>
   publicAxios.post<LoginResponse>("/auth/refresh", {
     refreshToken,

@@ -3,7 +3,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import styled from "styled-components";
 
 import { GameModeEnum, MainPEnum } from "@/@generated/types";
-import { AuthAxios } from "@/api";
 import MannerLevel from "@/pages/report/components/post-detail-modal/MannerLevel";
 import ProfileImage from "@/pages/report/components/post-detail-modal/ProfileImage";
 import RankTier from "@/pages/report/components/post-detail-modal/RankTier";
@@ -15,6 +14,7 @@ import GameStyle from "./GameStyle";
 import PositionBox from "./PositionBox";
 import QueueType from "./QueueType";
 import WinningRate from "./WinningRate";
+import { authAxios } from "@/api/lib/axios.auth";
 
 interface PostDetailModalProps {
   isOpen: boolean;
@@ -34,7 +34,7 @@ const PostDetailModal = ({
   const { data } = useQuery({
     queryKey: ["post", postId],
     queryFn: () =>
-      AuthAxios.get(`/api/v2/posts/member/list/82`).then(
+      authAxios.get(`/api/v2/posts/member/list/82`).then(
         (res) => res.data.data
       ),
   });
@@ -42,7 +42,7 @@ const PostDetailModal = ({
   const { mutate: deletePost } = useMutation({
     mutationFn: () => {
       if (!reportId) return Promise.reject(new Error("reportId is required"));
-      return AuthAxios.delete(`/api/v2/report/${reportId}/post`);
+      return authAxios.delete(`/api/v2/report/${reportId}/post`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["report"] });
