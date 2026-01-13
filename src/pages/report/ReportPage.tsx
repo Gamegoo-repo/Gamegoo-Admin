@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import styled from "styled-components";
 
-import { AuthAxios } from "@/api";
+
 import { Label, Title } from "@/components/common";
 import Table from "@/components/table/Table";
 
@@ -11,6 +11,7 @@ import { TopFilterContainer } from "./components";
 import PostDetailModal from "./components/post-detail-modal/PostDetailModal";
 import { getReportTableColumns } from "./constants";
 import { getFilterParams } from "./utils";
+import { authAxios } from "@/api/lib/axios.auth";
 
 const ReportPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -27,7 +28,7 @@ const ReportPage = () => {
     queryKey: ["report", searchParams.toString()],
     queryFn: async () => {
       const params = getFilterParams(searchParams);
-      const response = await AuthAxios.get("/api/v2/report/list", { params });
+      const response = await authAxios.get("/api/v2/report/list", { params });
 
       return response.data.data;
     },

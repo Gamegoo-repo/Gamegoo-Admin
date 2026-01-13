@@ -1,18 +1,18 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-import { postLogout } from "../../api/login";
 import { theme } from "../../styles/theme";
-import { clearTokens } from "../../utils/storage";
 import Button from "./Button";
+import { logoutApi } from "@/api/auth/auth.api";
+import { clearAuth } from "@/api/auth/auth.storage";
 
 const Header = () => {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
-      await postLogout();
-      await clearTokens();
+      await logoutApi
+      await clearAuth()
       navigate("/login");
     } catch {
       console.error("로그아웃 오류");

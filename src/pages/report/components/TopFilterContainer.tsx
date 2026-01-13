@@ -3,13 +3,13 @@ import { SetURLSearchParams } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import styled from "styled-components";
 
-import { AuthAxios } from "@/api";
 import { Button, Dropdown } from "@/components/common";
 import { ACCOUNT, SORT } from "@/pages/report/constants/dropdown";
 import { theme } from "@/styles/theme";
 import { DropdownOption } from "@/types/filter/filter";
 
 import AdvancedFilter from "./AdvancedFilter";
+import { authAxios } from "@/api/lib/axios.auth";
 
 interface TopFilterContainerProps {
   searchParams: URLSearchParams;
@@ -36,7 +36,7 @@ const TopFilterContainer = ({
       banType: string;
     }) => {
       const promises = reportIds.map((reportId) =>
-        AuthAxios.put(`/api/v2/report/${reportId}/process`, { banType })
+        authAxios.put(`/api/v2/report/${reportId}/process`, { banType })
       );
       return Promise.all(promises);
     },

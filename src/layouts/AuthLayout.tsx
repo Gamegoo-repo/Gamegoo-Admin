@@ -1,7 +1,8 @@
+import { getAccessToken } from "@/api/auth/auth.storage";
 import { useEffect, useState } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
-import { getAccessToken } from "../utils/storage";
+
 
 const AuthLayout = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -10,7 +11,7 @@ const AuthLayout = () => {
 
   useEffect(() => {
     const checkAuthStatus = () => {
-      const token = getAccessToken();
+      const token = getAccessToken()
       setIsAuthenticated(!!token);
       setIsLoading(false);
     };
