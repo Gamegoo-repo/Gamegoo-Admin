@@ -55,7 +55,7 @@ export const getReportTableColumns = (
       if (value === "BOARD") {
         const handleClick = () => {
           if (callbacks.onShowPostDetail) {
-            callbacks.onShowPostDetail(row.reportId);
+            callbacks.onShowPostDetail(row.postId);
           }
         };
 

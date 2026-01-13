@@ -1,5 +1,6 @@
 export interface ReportTableRow {
   reportId: number;
+  postId: number;
   state: string;
   targetMember: string;
   reportType: string;
@@ -12,6 +13,7 @@ export interface ReportTableRow {
 
 export const mapReportToTableRow = (item: any) : ReportTableRow => ({
   reportId: item.reportId,
+  postId: item.postId,
   state: "",
   targetMember: `${item.toMemberName}#${item.toMemberTag}`,
   reportType: item.reportType,
