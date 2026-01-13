@@ -1,7 +1,7 @@
 import type { ApiResponse } from "../api";
 
 export interface LoginRequest {
-  email: string;
+  account: string;
   password: string;
 }
 

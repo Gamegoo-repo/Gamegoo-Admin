@@ -3,21 +3,17 @@ import styled from "styled-components";
 
 import { theme } from "../../styles/theme";
 import Button from "./Button";
-import { logoutApi } from "@/api/auth/auth.api";
-import { clearAuth } from "@/api/auth/auth.storage";
+import { logout} from "@/api/auth/auth.service";
+
 
 const Header = () => {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-    try {
-      await logoutApi
-      await clearAuth()
-      navigate("/login");
-    } catch {
-      console.error("로그아웃 오류");
-    }
+    await logout()
+    navigate("/login");
   };
+
   return (
     <Layout>
       <Container>

@@ -1,4 +1,4 @@
-import { loginApi, refreshApi } from "./auth.api";
+import { loginApi, logoutApi, refreshApi } from "./auth.api";
 import {initAuthStorage, getRefreshToken, saveAuth, clearAuth } from "./auth.storage";
 
 let isRefreshing = false;
@@ -23,6 +23,16 @@ export const login = async(
   return res;
 }
 
+export const logout = async () => {
+  try {
+    await logoutApi();
+  } catch (error) {
+    console.warn("Server logout failed", error);
+  } finally {
+    clearAuth();
+  }
+};
+
 export const refreshAccessToken = async (): Promise<string> => {
   if (isRefreshing) {
     return new Promise((resolve) => {
@@ -39,7 +49,7 @@ export const refreshAccessToken = async (): Promise<string> => {
     }
 
     const { data } = await refreshApi(refreshToken);
-
+    
     saveAuth({
       accessToken: data.data.accessToken,
       refreshToken: data.data.refreshToken,

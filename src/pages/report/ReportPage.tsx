@@ -1,134 +1,127 @@
-import { useEffect, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
 import styled from "styled-components";
-
 
 import { Label, Title } from "@/components/common";
 import Table from "@/components/table/Table";
-
 import { TopFilterContainer } from "./components";
 import PostDetailModal from "./components/post-detail-modal/PostDetailModal";
 import { getReportTableColumns } from "./constants";
 import { getFilterParams } from "./utils";
-import { authAxios } from "@/api/lib/axios.auth";
+import { useReportsQuery } from "@/hooks/api/reports/useReportsQuery";
+import { mapReportToTableRow, ReportTableRow } from "@/pages/report/utils/report.mapper";
 
 const ReportPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedPostId, setSelectedPostId] = useState<number | undefined>();
-  const [selectedReportId, setSelectedReportId] = useState<
-    number | undefined
-  >();
-  const [checkedItems, setCheckedItems] = useState<boolean[]>([]);
-
   const currentPage = Number(searchParams.get("page")) || 1;
 
-  const { data = { reports: [], totalPages: 0 } } = useQuery({
-    queryKey: ["report", searchParams.toString()],
-    queryFn: async () => {
-      const params = getFilterParams(searchParams);
-      const response = await authAxios.get("/api/v2/report/list", { params });
+  const params = useMemo(
+    () => getFilterParams(searchParams),
+    [searchParams]
+  );
 
-      return response.data.data;
+  const { data = { reports: [], totalPages: 0 } } =
+    useReportsQuery(params);
+
+  const tableData: ReportTableRow[] = useMemo(
+    () => data.reports.map(mapReportToTableRow),
+    [data.reports]
+  );
+
+  const [checkedIds, setCheckedIds] = useState<Set<number>>(new Set());
+
+  const checkedReportIds = useMemo(
+    () => Array.from(checkedIds),
+    [checkedIds]
+  );
+
+  const handleCheck = useCallback((reportId: number) => {
+    setCheckedIds(prev => {
+      const next = new Set(prev);
+
+      if (next.has(reportId)) {
+        next.delete(reportId);
+      } else {
+        next.add(reportId);
+      }
+
+      return next;
+    });
+  }, []);
+
+  const handleSelectAll = useCallback(() => {
+    setCheckedIds(prev =>
+      prev.size === tableData.length
+        ? new Set()
+        : new Set(tableData.map(row => row.reportId))
+    );
+  }, [tableData]);
+
+  const handlePageChange = useCallback(
+    (page: number) => {
+      const next = new URLSearchParams(searchParams);
+      next.set("page", String(page));
+      setSearchParams(next);
     },
-  });
+    [searchParams, setSearchParams]
+  );
 
-  const tableData = data.reports.map((item: any) => ({
-    reportId: item.reportId,
-    state: "", // TODO: 계정 상태 (추후 추가 필요)
-    targetMember: `${item.toMemberName}#${item.toMemberTag}`,
-    reportType: item.reportType,
-    content: item.content,
-    reporter: `${item.fromMemberName}#${item.fromMemberTag}`,
-    createdAt: new Date(item.createdAt).toLocaleString("ko-KR", {
-      year: "numeric",
-      month: "numeric",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    }),
-    reportCount: "", // TODO: 누적 횟수 (추후 추가 필요)
-    path: item.path,
-  }));
+  const [selected, setSelected] = useState<{
+    reportId: number;
+    postId: number;
+  } | null>(null);
 
-  const totalPages = data.totalPages;
+  const handleShowPostDetail = useCallback((id: number) => {
+    setSelected({ reportId: id, postId: id });
+  }, []);
 
-  // 데이터가 변경되면 체크 상태 초기화
-  useEffect(() => {
-    setCheckedItems(new Array(tableData.length).fill(false));
-  }, [tableData.length]);
+  const handleCloseModal = useCallback(() => {
+    setSelected(null);
+  }, []);
 
-  const handlePageChange = (page: number) => {
-    const newParams = new URLSearchParams(searchParams);
-    newParams.set("page", page.toString());
-    setSearchParams(newParams);
-  };
-
-  const handleSelectAll = () => {
-    const allSelected = checkedItems.every(Boolean) && checkedItems.length > 0;
-    setCheckedItems(new Array(tableData.length).fill(!allSelected));
-  };
-
-  const handleCheck = (index: number) => {
-    const updated = [...checkedItems];
-    updated[index] = !updated[index];
-    setCheckedItems(updated);
-  };
-
-  const handleShowPostDetail = (reportId: number) => {
-    // reportId를 postId로 사용 (실제로는 row에서 boardId나 postId를 가져와야 할 수도 있음)
-    setSelectedPostId(reportId);
-    setSelectedReportId(reportId);
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedPostId(undefined);
-    setSelectedReportId(undefined);
-  };
-
-  // 체크된 아이템들의 reportId 가져오기
-  const getCheckedReportIds = (): number[] => {
-    return tableData
-      .filter((_: any, index: number) => checkedItems[index])
-      .map((item: any) => item.reportId);
-  };
-
-  const tableColumns = getReportTableColumns({
-    onShowPostDetail: handleShowPostDetail,
-  });
+  const tableColumns = useMemo(
+    () =>
+      getReportTableColumns({
+        onShowPostDetail: handleShowPostDetail,
+      }),
+    [handleShowPostDetail]
+  );
 
   return (
     <>
       <Layout>
         <Title title="신고 유저 목록" />
+
         <TopFilterContainer
           searchParams={searchParams}
           setSearchParams={setSearchParams}
-          checkedReportIds={getCheckedReportIds()}
+          checkedReportIds={checkedReportIds}
         />
+
         <Table
           data={tableData}
           columns={tableColumns}
           currentPage={currentPage}
-          totalPages={totalPages}
-          checkedItems={checkedItems}
+          totalPages={data.totalPages}
+          checkedItems={tableData.map(row =>
+            checkedIds.has(row.reportId)
+          )}
           onPageChange={handlePageChange}
           onSelectAll={handleSelectAll}
-          onCheck={handleCheck}
+          onCheck={(index: number) =>
+            handleCheck(tableData[index].reportId)
+          }
         />
         <Label variant="purple" label="3일 정지" />
         <Label variant="green" label="정상" />
         <Label variant="red" label="영구 정지" />
         <Label variant="gray" label="스팸 홍보 / 도매글" />
       </Layout>
+
       <PostDetailModal
-        isOpen={isModalOpen}
-        reportId={selectedReportId}
-        postId={selectedPostId}
+        isOpen={!!selected}
+        reportId={selected?.reportId}
+        postId={selected?.postId}
         onClose={handleCloseModal}
       />
     </>
@@ -136,6 +129,7 @@ const ReportPage = () => {
 };
 
 export default ReportPage;
+
 
 const Layout = styled.div`
   width: 100%;
@@ -147,3 +141,4 @@ const Layout = styled.div`
   gap: 24px;
   overflow-y: auto;
 `;
+
