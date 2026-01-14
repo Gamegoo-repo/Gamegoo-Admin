@@ -1,5 +1,4 @@
 import { createPortal } from "react-dom";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import styled from "styled-components";
 
 import { GameModeEnum, MainPEnum } from "@/@generated/types";
@@ -8,13 +7,14 @@ import ProfileImage from "@/pages/report/components/post-detail-modal/ProfileIma
 import RankTier from "@/pages/report/components/post-detail-modal/RankTier";
 import UserAccount from "@/pages/report/components/post-detail-modal/UserAccount";
 import { theme } from "@/styles/theme";
-
 import Champion from "./Champion";
 import GameStyle from "./GameStyle";
 import PositionBox from "./PositionBox";
 import QueueType from "./QueueType";
 import WinningRate from "./WinningRate";
-import { authAxios } from "@/api/lib/axios.auth";
+
+import { usePostDetailQuery } from "@/hooks/api/post/usePostDetailQuery";
+import { useDeleteReportedPostMutation } from "@/hooks/api/reports/useDeleteReportedPostMutation";
 
 interface PostDetailModalProps {
   isOpen: boolean;
@@ -29,40 +29,18 @@ const PostDetailModal = ({
   postId,
   onClose,
 }: PostDetailModalProps) => {
-  const queryClient = useQueryClient();
+  const { data } = usePostDetailQuery(postId);
+  const { mutate: deletePost } = useDeleteReportedPostMutation(onClose);
 
-  const { data } = useQuery({
-    queryKey: ["post", postId],
-    queryFn: () =>
-      authAxios.get(`/api/v2/posts/member/list/82`).then(
-        (res) => res.data.data
-      ),
-  });
+  if (!isOpen || !data) return null;
 
-  const { mutate: deletePost } = useMutation({
-    mutationFn: () => {
-      if (!reportId) return Promise.reject(new Error("reportId is required"));
-      return authAxios.delete(`/api/v2/report/${reportId}/post`);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["report"] });
-      onClose();
-    },
-  });
+  const modalRoot = document.getElementById("modal-root");
+  if (!modalRoot) return null;
 
   const handleDeletePost = () => {
-    deletePost();
+    if (!reportId) return;
+    deletePost(reportId);
   };
-
-  const modalRoot = document.getElementById("modal-root") as HTMLElement;
-  if (!modalRoot) {
-    console.warn("modal-root element not found");
-    return null;
-  }
-
-  if (!isOpen || !data) {
-    return null;
-  }
 
   return createPortal(
     <Overlay>

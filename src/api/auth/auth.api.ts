@@ -1,13 +1,10 @@
+import { LoginResponse } from "@/types/api/login";
 import { authAxios } from "../lib/axios.auth";
 import { publicAxios } from "../lib/axios.public";
+import { ReissueResponse } from "@/types/api/reissue";
 
 
-export interface LoginResponse {
-  data: {
-    accessToken: string;
-    refreshToken: string;
-  };
-}
+
 
 export const loginApi = (payload: {
   account: string;
@@ -19,6 +16,6 @@ export const logoutApi= ()=> {
     authAxios.post("api/v2/auth/logout")
 }
 export const refreshApi = (refreshToken: string) =>
-  publicAxios.post<LoginResponse>("/auth/refresh", {
+  publicAxios.post<ReissueResponse>("api/v2/auth/refresh", {
     refreshToken,
   });
