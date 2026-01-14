@@ -15,6 +15,8 @@ import WinningRate from "./WinningRate";
 
 import { usePostDetailQuery } from "@/hooks/api/post/usePostDetailQuery";
 import { useDeleteReportedPostMutation } from "@/hooks/api/reports/useDeleteReportedPostMutation";
+import { AxiosError } from "axios";
+import { useEffect } from "react";
 
 interface PostDetailModalProps {
   isOpen: boolean;
@@ -29,8 +31,16 @@ const PostDetailModal = ({
   postId,
   onClose,
 }: PostDetailModalProps) => {
-  const { data } = usePostDetailQuery(postId);
+  const { data, error } = usePostDetailQuery(postId);
   const { mutate: deletePost } = useDeleteReportedPostMutation(onClose);
+
+  // 404 에러 처리 - 게시글이 삭제된 경우
+  useEffect(() => {
+    if (error instanceof AxiosError && error.response?.status === 404) {
+      alert("삭제된 게시글입니다.");
+      onClose();
+    }
+  }, [error, onClose]);
 
   if (!isOpen || !data) return null;
 
