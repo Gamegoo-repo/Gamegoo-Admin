@@ -5,6 +5,7 @@ export const getFilterParams = (searchParams: URLSearchParams) => {
   const params: any = {
     page: currentPage - 1, // API는 0-based
     size: pageSize,
+    sortOrder: searchParams.get("sortOrder") ?? "LATEST",
   };
 
   // 필터 값들 추가

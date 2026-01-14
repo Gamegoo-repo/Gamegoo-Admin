@@ -15,15 +15,21 @@ interface TopFilterContainerProps {
   searchParams: URLSearchParams;
   setSearchParams: SetURLSearchParams;
   checkedReportIds: number[];
+  totalElements: number
 }
 
 const TopFilterContainer = ({
   searchParams,
   setSearchParams,
   checkedReportIds,
+  totalElements
 }: TopFilterContainerProps) => {
-  const [isAdvancedFilterOpen, setIsAdvancedFilterOpen] =
-    useState<boolean>(false);
+  const [isAdvancedFilterOpen, setIsAdvancedFilterOpen] = useState<boolean>(false);
+  
+  const currentSort = searchParams.get("sortOrder") ?? "LATEST";
+
+  const currentSortLabel =
+  SORT.find(option => option.value === currentSort)?.label ?? "최신순"
 
   const queryClient = useQueryClient();
 
@@ -57,12 +63,19 @@ const TopFilterContainer = ({
 
     processReports({ reportIds: checkedReportIds, banType: option.value });
   };
+  
+  const handleSortChange = (option: DropdownOption) => {
+    const next = new URLSearchParams(searchParams);
+    next.set("sortOrder", option.value);
+    next.set("page", "1"); // 정렬 변경 시 페이지 초기화 권장
+    setSearchParams(next);
+  };
 
   return (
     <TopContainer>
       <TopWrapper>
         <Total>
-          전체 <Count>32</Count>
+          전체 <Count>{totalElements}</Count>
         </Total>
         <Filter>
           <Button
@@ -75,11 +88,15 @@ const TopFilterContainer = ({
             onClick={handleAdvancedFilterOpen}
           />
           <Dropdown
-            label="계정 제재"
+            label={"계정 제재"}
             options={ACCOUNT}
             onSelect={handleAccountAction}
           />
-          <Dropdown label="최신순" options={SORT} />
+          <Dropdown
+            label={currentSortLabel}
+            options={SORT}
+            onSelect={handleSortChange}
+          />
         </Filter>
       </TopWrapper>
       <AdvancedFilter

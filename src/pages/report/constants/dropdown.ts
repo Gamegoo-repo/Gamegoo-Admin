@@ -52,7 +52,7 @@ export const SORT: readonly DropdownOption[] = Object.freeze([
   {
     id: 0,
     label: "최신순",
-    value: "NEWEST",
+    value: "LATEST",
   },
   {
     id: 1,

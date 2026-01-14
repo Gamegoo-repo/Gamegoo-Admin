@@ -22,7 +22,6 @@ const ReportPage = () => {
 
   const { data = { reports: [], totalPages: 0 } } =
     useReportsQuery(params);
-
   const tableData: ReportTableRow[] = useMemo(
     () => data.reports.map(mapReportToTableRow),
     [data.reports]
@@ -96,6 +95,7 @@ const ReportPage = () => {
           searchParams={searchParams}
           setSearchParams={setSearchParams}
           checkedReportIds={checkedReportIds}
+          totalElements={data.totalElements}
         />
 
         <Table

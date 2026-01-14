@@ -16,6 +16,10 @@ const Dropdown: React.FC<DropdownProps> = ({ label, options, onSelect }) => {
   const [selected, setSelected] = useState(label);
   const ref = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    setSelected(label);
+  }, [label]);
+
   const toggleDropdown = () => setIsOpen(!isOpen);
 
   const handleSelect = (option: DropdownOption) => {
