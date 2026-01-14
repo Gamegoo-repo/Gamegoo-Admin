@@ -15,25 +15,25 @@ import { login } from "@/api/auth/auth.service";
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const [memberId, setMemberId] = useState("");
+  const [accountId, setAccountId] = useState("");
+  const [password, setPassword] = useState("")
 
   const [autoLogin, setAutoLogin] = useState(false);
 
-  const AdminPassword = import.meta.env.VITE_PUBLIC_ADMIN_PASSWORD as string
 
 
 
   useEffect(() => {
-    if (memberId.length !== 0) {
+    if (accountId.length !== 0) {
       // validateEmail(email);
     }
-  }, [memberId]);
+  }, [accountId]);
 
   /* 로그인 */
   const handleLogin = async () => {
   try {
     await login(
-      { account: memberId, password: AdminPassword },
+      { account: accountId, password: password },
       autoLogin
     );
 
@@ -60,21 +60,31 @@ const LoginPage = () => {
             <InputBox>
               <LoginInput
                 inputType="input"
-                value={memberId}
+                value={accountId}
                 onChange={(value) => {
-                  setMemberId(value);
+                  setAccountId(value);
                   // validateEmail(value);
                 }}
                 errorMsg="정보 불일치"
                 placeholder="사용자 ID"
                 // isvalid={emailValid}
               />
+              <LoginInput
+                inputType="password"
+                value={password}
+                onChange={(value) => {
+                  setPassword(value)
+                }}
+                errorMsg="정보 불일치"
+                placeholder="비밀번호"
+              />
+
             </InputBox>
             <Button
               variant="primary"
               label="로그인"
               onClick={handleLogin}
-              disabled={!memberId}
+              disabled={!accountId || !password}
               height="58px"
               borderRadius="15px"
             />
