@@ -1,6 +1,7 @@
 import React from "react";
-import { theme } from "../../styles/theme";
 import styled, { css } from "styled-components";
+
+import { theme } from "../../styles/theme";
 
 interface ButtonProps {
   variant?: "primary" | "secondary" | "default";
@@ -12,6 +13,7 @@ interface ButtonProps {
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   disabled?: boolean;
   selected?: boolean;
+  borderRadius?: string;
 }
 
 const Button = (props: ButtonProps) => {
@@ -25,6 +27,7 @@ const Button = (props: ButtonProps) => {
     onClick,
     disabled = false,
     selected = false,
+    borderRadius,
   } = props;
 
   return (
@@ -37,6 +40,7 @@ const Button = (props: ButtonProps) => {
       $height={height}
       $fontsize={fontSize}
       $selected={selected}
+      $borderRadius={borderRadius}
     >
       {icon && <img src={icon} width={24} height={24} />}
       {label}
@@ -51,23 +55,26 @@ const StyledButton = styled.button<{
   $height?: string;
   $fontsize?: string;
   $selected?: boolean;
+  $borderRadius?: string;
 }>`
   width: ${({ $width }) => $width || "100%"};
   height: ${({ $height }) => $height || "auto"};
-  border-radius: 4px;
+  border-radius: ${({ $borderRadius }) => $borderRadius || "4px"};
   color: ${theme.colors.white};
   ${theme.fonts.bold14};
   white-space: nowrap;
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: color 200ms, background-color 200ms;
+  transition:
+    color 200ms,
+    background-color 200ms;
 
   &.primary {
     background: ${theme.colors.violet600};
     color: ${theme.colors.white};
     &:disabled {
-      background: ${theme.colors.gray100};
+      background: ${theme.colors.gray300};
     }
   }
   &.secondary {

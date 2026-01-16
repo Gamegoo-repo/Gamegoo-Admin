@@ -1,22 +1,34 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { DropdownOption } from "../../constants/dropdown";
+
+import { DropdownOption } from "@/types/filter/filter";
+
 import { theme } from "../../styles/theme";
 
 type DropdownProps = {
   label: string;
-  options: DropdownOption[];
+  options: readonly DropdownOption[];
   onSelect?: (option: DropdownOption) => void;
 };
 
-const Dropdown: React.FC<DropdownProps> = ({ label, options }) => {
+const Dropdown: React.FC<DropdownProps> = ({ label, options, onSelect }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState(label);
   const ref = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    setSelected(label);
+  }, [label]);
+
   const toggleDropdown = () => setIsOpen(!isOpen);
 
   const handleSelect = (option: DropdownOption) => {
+    if (onSelect) {
+      onSelect(option);
+      setIsOpen(false);
+      return;
+    }
+
     setSelected(option.label);
     setIsOpen(false);
   };

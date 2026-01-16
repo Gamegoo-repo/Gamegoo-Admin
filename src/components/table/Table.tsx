@@ -1,32 +1,56 @@
 import React from "react";
+import styled from "styled-components";
+
+import { Pagination } from "@/components/common";
+import { TableColumn, TableData } from "@/types/table/table";
+
 import { TableHeader } from "./TableHeader";
 import { TableRow } from "./TableRow";
-import Pagination from "../common/Pagination";
-import styled from "styled-components";
-import { TableData } from "../../types/table/table";
 
 interface TableProps {
-  data: TableData[];
-  columns: string[];
+  data?: TableData[];
+  columns: TableColumn[];
   currentPage: number;
   totalPages: number;
+  checkedItems: boolean[];
   onPageChange: (page: number) => void;
+  onSelectAll: () => void;
+  onCheck: (index: number) => void;
 }
 
 const Table: React.FC<TableProps> = ({
-  data,
+  data = [],
   columns,
   currentPage,
   totalPages,
+  checkedItems,
   onPageChange,
+  onSelectAll,
+  onCheck,
 }) => {
+  const allSelected = checkedItems.every(Boolean) && checkedItems.length > 0;
+
+  if (!data) {
+    return null;
+  }
+
   return (
     <TableContainer>
       <table>
-        <TableHeader columns={columns} />
+        <TableHeader
+          columns={columns}
+          allSelected={allSelected}
+          onSelectAll={onSelectAll}
+        />
         <tbody>
           {data.map((row, index) => (
-            <TableRow key={index} row={row} />
+            <TableRow
+              key={index}
+              row={row}
+              columns={columns}
+              isChecked={checkedItems[index] || false}
+              onCheck={() => onCheck(index)}
+            />
           ))}
         </tbody>
       </table>

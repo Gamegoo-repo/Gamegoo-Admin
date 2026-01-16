@@ -1,10 +1,18 @@
-import styled from "styled-components";
-import { theme } from "../../styles/theme";
 import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
+
+import { theme } from "../../styles/theme";
 import Button from "./Button";
+import { logout} from "@/api/auth/auth.service";
+
 
 const Header = () => {
   const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logout()
+    navigate("/login");
+  };
 
   return (
     <Layout>
@@ -23,6 +31,7 @@ const Header = () => {
           width="72px"
           height="32px"
           fontSize="bold16"
+          onClick={handleLogout}
         />
       </Container>
     </Layout>

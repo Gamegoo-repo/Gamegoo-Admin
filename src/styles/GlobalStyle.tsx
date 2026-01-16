@@ -1,4 +1,5 @@
 import { createGlobalStyle } from "styled-components";
+
 import { theme } from "./theme";
 
 const GlobalStyle = createGlobalStyle`    
@@ -22,20 +23,6 @@ const GlobalStyle = createGlobalStyle`
         font-family: "Pretendard";
         background-color: ${theme.colors.gray100};
         overflow: hidden;
-      }
-
-      &::-webkit-scrollbar {
-        width: 24px;
-        height: 100px;
-      }
-      &::-webkit-scrollbar-thumb {
-            border-radius: 26px;
-        background: ${theme.colors.gray500};
-        background-clip: padding-box;
-        border: 8px solid transparent;
-      }
-      &::-webkit-scrollbar-track {
-        background: transparent;
       }
 
       a {
@@ -69,7 +56,6 @@ const GlobalStyle = createGlobalStyle`
         font-size: inherit;
         line-height: inherit;
         border-radius: 4px;
-        padding: 8px;
         border: none;
         resize: none;
         outline: none;
@@ -88,7 +74,8 @@ const GlobalStyle = createGlobalStyle`
       }
       
       th {
-        padding: 7.5px 12px;
+        /* padding: 7.5px 12px; */
+        padding: 8.5px 12.5px;
         text-align: left;
         word-wrap: break-word;
       }
