@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { SetURLSearchParams } from "react-router-dom";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import styled from "styled-components";
 
 import { Button, Dropdown } from "@/components/common";
@@ -9,7 +8,8 @@ import { theme } from "@/styles/theme";
 import { DropdownOption } from "@/types/filter/filter";
 
 import AdvancedFilter from "./AdvancedFilter";
-import { authAxios } from "@/api/lib/axios.auth";
+import { useProcessReportsMutation } from "@/hooks/api/reports/useProcessReportsMutation";
+import { BanTypeEnum } from "@/@generated/types";
 
 interface TopFilterContainerProps {
   searchParams: URLSearchParams;
@@ -31,25 +31,7 @@ const TopFilterContainer = ({
   const currentSortLabel =
   SORT.find(option => option.value === currentSort)?.label ?? "최신순"
 
-  const queryClient = useQueryClient();
-
-  const { mutate: processReports } = useMutation({
-    mutationFn: ({
-      reportIds,
-      banType,
-    }: {
-      reportIds: number[];
-      banType: string;
-    }) => {
-      const promises = reportIds.map((reportId) =>
-        authAxios.put(`/api/v2/report/${reportId}/process`, { banType })
-      );
-      return Promise.all(promises);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["report"] });
-    },
-  });
+  const { mutate: processReports } = useProcessReportsMutation();
 
   const handleAdvancedFilterOpen = () => {
     setIsAdvancedFilterOpen(!isAdvancedFilterOpen);
@@ -61,7 +43,7 @@ const TopFilterContainer = ({
       return;
     }
 
-    processReports({ reportIds: checkedReportIds, banType: option.value });
+    processReports({ reportIds: checkedReportIds, banType: option.value as BanTypeEnum});
   };
   
   const handleSortChange = (option: DropdownOption) => {

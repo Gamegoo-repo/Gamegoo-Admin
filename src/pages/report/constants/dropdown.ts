@@ -46,6 +46,11 @@ export const ACCOUNT: readonly DropdownOption[] = Object.freeze([
     label: "영구 정지",
     value: "PERMANENT",
   },
+  {
+    id: 9,
+    label: '재재 헤제',
+    value: "NONE"
+  }
 ]);
 
 export const SORT: readonly DropdownOption[] = Object.freeze([

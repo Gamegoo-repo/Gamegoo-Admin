@@ -1,3 +1,4 @@
+import { BanTypeEnum } from "@/@generated/types";
 import { authAxios } from "@/api/lib/axios.auth";
 
 export interface GetReportsParams {
@@ -12,3 +13,7 @@ export const getReportsApi = async (params: GetReportsParams) => {
 
 export const deleteReportedPostApi = (reportId: number) =>
   authAxios.delete(`/api/v2/report/${reportId}/post`);
+
+export const processReportApi = (reportId: number, banType: BanTypeEnum) => {
+  return authAxios.put(`/api/v2/report/${reportId}/process`, { banType });
+};

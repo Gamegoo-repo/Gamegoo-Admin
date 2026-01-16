@@ -52,14 +52,15 @@ export const getReportTableColumns = (
     header: "페이지",
     width: "120px",
     render: (value, row) => {
-      if (value === "BOARD") {
-        const handleClick = () => {
-          if (callbacks.onShowPostDetail) {
-            callbacks.onShowPostDetail(row.postId);
-          }
-        };
+      let handleClick: (() => void) | undefined = undefined;
+      switch (value) {
+        case "BOARD":
+          handleClick = () => {
+            if (callbacks.onShowPostDetail) {
+              callbacks.onShowPostDetail(row.postId);
+            }
+          };
 
-        return (
           <button
             onClick={handleClick}
             style={{
@@ -73,13 +74,30 @@ export const getReportTableColumns = (
             }}
           >
             <span style={{ textDecoration: "underline" }}>게시판</span> x
-          </button>
-        );
+          </button>;
+          break;
+        case "PROFILE":
+          return "프로필";
+        case "CHAT":
+          return "채팅방";
       }
-      if (value === "PROFILE") {
-        return "프로필";
-      }
-      return null;
+
+      return (
+        <button
+          onClick={handleClick}
+          style={{
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            color: "red",
+            margin: 0,
+            padding: 0,
+            fontSize: "inherit",
+          }}
+        >
+          <span style={{ textDecoration: "underline" }}>게시판</span> x
+        </button>
+      );
     },
   },
 ];
