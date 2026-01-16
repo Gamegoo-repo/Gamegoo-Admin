@@ -2,26 +2,27 @@ import { useCallback, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import styled from "styled-components";
 
-import { Label, Title } from "@/components/common";
+import { Title } from "@/components/common";
 import Table from "@/components/table/Table";
+import { useReportsQuery } from "@/hooks/api/reports/useReportsQuery";
+import {
+  mapReportToTableRow,
+  ReportTableRow,
+} from "@/pages/report/utils/report.mapper";
+
 import { TopFilterContainer } from "./components";
 import PostDetailModal from "./components/post-detail-modal/PostDetailModal";
 import { getReportTableColumns } from "./constants";
 import { getFilterParams } from "./utils";
-import { useReportsQuery } from "@/hooks/api/reports/useReportsQuery";
-import { mapReportToTableRow, ReportTableRow } from "@/pages/report/utils/report.mapper";
 
 const ReportPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("page")) || 1;
 
-  const params = useMemo(
-    () => getFilterParams(searchParams),
-    [searchParams]
-  );
+  const params = useMemo(() => getFilterParams(searchParams), [searchParams]);
+  
+  const { data = { reports: [], totalPages: 0 } } = useReportsQuery(params);
 
-  const { data = { reports: [], totalPages: 0 } } =
-    useReportsQuery(params);
   const tableData: ReportTableRow[] = useMemo(
     () => data.reports.map(mapReportToTableRow),
     [data.reports]
@@ -29,13 +30,10 @@ const ReportPage = () => {
 
   const [checkedIds, setCheckedIds] = useState<Set<number>>(new Set());
 
-  const checkedReportIds = useMemo(
-    () => Array.from(checkedIds),
-    [checkedIds]
-  );
+  const checkedReportIds = useMemo(() => Array.from(checkedIds), [checkedIds]);
 
   const handleCheck = useCallback((reportId: number) => {
-    setCheckedIds(prev => {
+    setCheckedIds((prev) => {
       const next = new Set(prev);
 
       if (next.has(reportId)) {
@@ -49,10 +47,10 @@ const ReportPage = () => {
   }, []);
 
   const handleSelectAll = useCallback(() => {
-    setCheckedIds(prev =>
+    setCheckedIds((prev) =>
       prev.size === tableData.length
         ? new Set()
-        : new Set(tableData.map(row => row.reportId))
+        : new Set(tableData.map((row) => row.reportId))
     );
   }, [tableData]);
 
@@ -103,19 +101,11 @@ const ReportPage = () => {
           columns={tableColumns}
           currentPage={currentPage}
           totalPages={data.totalPages}
-          checkedItems={tableData.map(row =>
-            checkedIds.has(row.reportId)
-          )}
+          checkedItems={tableData.map((row) => checkedIds.has(row.reportId))}
           onPageChange={handlePageChange}
           onSelectAll={handleSelectAll}
-          onCheck={(index: number) =>
-            handleCheck(tableData[index].reportId)
-          }
+          onCheck={(index: number) => handleCheck(tableData[index].reportId)}
         />
-        <Label variant="purple" label="3일 정지" />
-        <Label variant="green" label="정상" />
-        <Label variant="red" label="영구 정지" />
-        <Label variant="gray" label="스팸 홍보 / 도매글" />
       </Layout>
 
       <PostDetailModal
@@ -130,7 +120,6 @@ const ReportPage = () => {
 
 export default ReportPage;
 
-
 const Layout = styled.div`
   width: 100%;
   display: flex;
@@ -141,4 +130,3 @@ const Layout = styled.div`
   gap: 24px;
   overflow-y: auto;
 `;
-

@@ -11,10 +11,10 @@ export interface ReportTableRow {
   path: string;
 }
 
-export const mapReportToTableRow = (item: any) : ReportTableRow => ({
+export const mapReportToTableRow = (item: any): ReportTableRow => ({
   reportId: item.reportId,
   postId: item.postId,
-  state: "",
+  state: item.toMemberBanType,
   targetMember: `${item.toMemberName}#${item.toMemberTag}`,
   reportType: item.reportType,
   content: item.content,
@@ -27,6 +27,6 @@ export const mapReportToTableRow = (item: any) : ReportTableRow => ({
     minute: "2-digit",
     hour12: false,
   }),
-  reportCount: "",
+  reportCount: item.reportCount,
   path: item.path,
 });

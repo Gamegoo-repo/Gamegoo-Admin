@@ -39,7 +39,6 @@ export enum BanTypeEnum {
   BAN_1D = "BAN_1D",
   BAN_3D = "BAN_3D",
   BAN_5D = "BAN_5D",
-  BAN_7D = "BAN_7D",
   BAN_1W = "BAN_1W",
   BAN_2W = "BAN_2W",
   BAN_1M = "BAN_1M",
